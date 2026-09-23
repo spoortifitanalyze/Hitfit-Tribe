@@ -107,17 +107,17 @@ const renderAdminPage = () => {
         <div id="admin-editor" class="admin-editor" style="display:none;">
           <label>
             About Hitendra Choudhary
-            <textarea id="about-input">${currentContent.about.trim()}</textarea>
+            <div id="about-input" contenteditable="true" spellcheck="true">${currentContent.about.trim()}</div>
           </label>
 
           <label>
             Training plan details
-            <textarea id="training-input">${currentContent.training.trim()}</textarea>
+            <div id="training-input" contenteditable="true" spellcheck="true">${currentContent.training.trim()}</div>
           </label>
 
           <label>
             Testimonials
-            <textarea id="testimonials-input">${currentContent.testimonials.trim()}</textarea>
+            <div id="testimonials-input" contenteditable="true" spellcheck="true">${currentContent.testimonials.trim()}</div>
           </label>
 
           <div class="admin-actions">
@@ -162,9 +162,9 @@ const renderAdminPage = () => {
 
   saveButton.addEventListener('click', () => {
     const nextContent = {
-      about: document.getElementById('about-input').value,
-      training: document.getElementById('training-input').value,
-      testimonials: document.getElementById('testimonials-input').value
+      about: document.getElementById('about-input').innerHTML,
+      training: document.getElementById('training-input').innerHTML,
+      testimonials: document.getElementById('testimonials-input').innerHTML
     };
 
     setStoredContent(nextContent);
