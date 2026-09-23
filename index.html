@@ -31,7 +31,6 @@
           <a href="#about">About</a>
           <a href="#programs">Coaching Programs</a>
           <a href="#testimonials">Testimonials</a>
-          <a href="#blog">Blog</a>
           <a href="#contact">Contact us</a>
         </nav>
 
@@ -53,6 +52,10 @@
               <a class="button button-primary" href="https://endurohub.in" target="_blank" rel="noreferrer">Start Training</a>
               <a class="button button-secondary" href="#contact">Fill in the form</a>
             </div>
+
+            <p class="social-link-wrap">
+              <a class="social-link" href="https://www.instagram.com/hit_fit_tribe/?hl=en" target="_blank" rel="noreferrer">Instagram: @hit_fit_tribe</a>
+            </p>
 
             <ul class="stats" aria-label="Key metrics">
               <li><strong>500+</strong><span>Runners coached</span></li>
@@ -82,14 +85,7 @@
             <p class="section-tag">About</p>
             <h2>Built for runners who want more than just mileage.</h2>
           </div>
-          <div>
-            <p>
-              At Hitfit Tribe, the goal is simple: help runners become stronger, more resilient, and more confident in their training. Led by coach Hitendra Choudhary, every program is designed around real progress, smart progression, and sustainable performance.
-            </p>
-            <p>
-              Whether you are just starting your running journey or preparing for your next race, the coaching approach blends endurance training, strength work, mobility, and mindset support so you can stay consistent and keep improving without burning out.
-            </p>
-          </div>
+          <div id="about-content"></div>
         </div>
       </section>
 
@@ -99,6 +95,8 @@
             <p class="section-tag">Coaching Programs</p>
             <h2>Programs tailored to every stage of your running journey</h2>
           </div>
+
+          <div id="training-content" class="training-content"></div>
 
           <div class="card-grid">
             <article class="program-card">
@@ -144,63 +142,7 @@
             <h2>Runners trust the process and feel the difference</h2>
           </div>
 
-          <div class="testimonial-grid">
-            <blockquote class="testimonial-card">
-              <p>“I used to dread every run. With Hitendra’s structure and support, I built consistency and finally finished my first 10K feeling strong.”</p>
-              <footer>
-                <strong>Priya S.</strong>
-                <span>Beginner Runner</span>
-              </footer>
-            </blockquote>
-
-            <blockquote class="testimonial-card">
-              <p>“The plans were realistic, the guidance was clear, and the mindset coaching helped me stay calm under pressure during race week.”</p>
-              <footer>
-                <strong>Rohit M.</strong>
-                <span>5K to 10K Athlete</span>
-              </footer>
-            </blockquote>
-
-            <blockquote class="testimonial-card">
-              <p>“Hitendra brings a rare mix of discipline and encouragement. His coaching didn’t just improve my pace—it made me more confident.”</p>
-              <footer>
-                <strong>Ananya K.</strong>
-                <span>Half Marathon Runner</span>
-              </footer>
-            </blockquote>
-          </div>
-        </div>
-      </section>
-
-      <section id="blog" class="section blog">
-        <div class="container">
-          <div class="section-heading">
-            <p class="section-tag">Blog</p>
-            <h2>Insights for runners who want to train with purpose</h2>
-          </div>
-
-          <div class="blog-grid">
-            <article class="blog-card">
-              <span class="meta">Recovery</span>
-              <h3>Why recovery is the real performance booster</h3>
-              <p>Learn how smart rest, sleep, and mobility can transform your training quality and long-term results.</p>
-              <a href="#contact">Read more</a>
-            </article>
-
-            <article class="blog-card">
-              <span class="meta">Training</span>
-              <h3>How to build endurance without burning out</h3>
-              <p>Progressive overload, proper pacing, and consistency matter more than chasing every workout at max effort.</p>
-              <a href="#contact">Read more</a>
-            </article>
-
-            <article class="blog-card">
-              <span class="meta">Mindset</span>
-              <h3>Confidence on race day starts long before the start line</h3>
-              <p>Use mental routines and preparation techniques to stay calm, focused, and consistent when the pressure rises.</p>
-              <a href="#contact">Read more</a>
-            </article>
-          </div>
+          <div id="testimonials-content" class="testimonial-grid"></div>
         </div>
       </section>
 
@@ -212,21 +154,24 @@
             <p>
               If you want coaching support, a custom training plan, or a consultation to find the right program, fill in the form and coach Hitendra will get back to you.
             </p>
+            <p class="contact-phone">
+              Contact: <a href="tel:+919823116000">9823116000</a>
+            </p>
             <a class="button button-primary" href="https://endurohub.in" target="_blank" rel="noreferrer">Start Training</a>
           </div>
 
-          <form class="contact-form" action="#" method="post">
+          <form id="contact-form" class="contact-form" action="#" method="post">
             <label>
               Full Name
-              <input type="text" name="name" placeholder="Your full name" />
+              <input type="text" name="name" placeholder="Your full name" required />
             </label>
             <label>
               Email
-              <input type="email" name="email" placeholder="you@example.com" />
+              <input type="email" name="email" placeholder="you@example.com" required />
             </label>
             <label>
               Goal
-              <select name="goal">
+              <select name="goal" required>
                 <option value="">Select your goal</option>
                 <option>Beginner running</option>
                 <option>5K / 10K improvement</option>
@@ -236,9 +181,10 @@
             </label>
             <label>
               Message
-              <textarea name="message" rows="5" placeholder="Tell us about your running goals and experience"></textarea>
+              <textarea name="message" rows="5" placeholder="Tell us about your running goals and experience" required></textarea>
             </label>
             <button type="submit" class="button button-primary">Fill in the form</button>
+            <div id="form-status" class="form-status" aria-live="polite"></div>
           </form>
         </div>
       </section>
@@ -257,5 +203,7 @@
         </div>
       </div>
     </footer>
+
+    <script src="script.js"></script>
   </body>
 </html>

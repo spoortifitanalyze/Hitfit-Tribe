@@ -1,16 +1,16 @@
 :root {
-  --bg: #07130f;
-  --bg-soft: #0d1f1a;
-  --panel: #112720;
-  --panel-alt: #163429;
-  --card: rgba(18, 36, 31, 0.9);
-  --text: #eefaf4;
-  --muted: #b4cec2;
-  --primary: #8af7b0;
-  --primary-strong: #5fe49b;
-  --accent: #d9ff8a;
-  --border: rgba(138, 247, 176, 0.24);
-  --shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
+  --bg: #111111;
+  --bg-soft: #1a1a1a;
+  --panel: #1f1f1f;
+  --panel-alt: #2a261f;
+  --card: rgba(28, 24, 20, 0.92);
+  --text: #fffaf5;
+  --muted: #f3dfc4;
+  --primary: #f6a21d;
+  --primary-strong: #f57b00;
+  --accent: #ffbf5a;
+  --border: rgba(246, 162, 29, 0.32);
+  --shadow: 0 18px 45px rgba(0, 0, 0, 0.38);
 }
 
 * {
@@ -24,7 +24,7 @@ html {
 body {
   margin: 0;
   font-family: "Inter", sans-serif;
-  background: linear-gradient(180deg, #07130f 0%, #0a1a16 100%);
+  background: linear-gradient(180deg, #111111 0%, #1c1208 100%);
   color: var(--text);
   line-height: 1.6;
 }
@@ -115,7 +115,7 @@ p {
   display: grid;
   place-items: center;
   background: linear-gradient(135deg, var(--primary), var(--accent));
-  color: #082015;
+  color: #111111;
   font-weight: 900;
 }
 
@@ -149,8 +149,8 @@ p {
 
 .button-primary {
   background: linear-gradient(135deg, var(--primary), var(--primary-strong));
-  color: #07130f;
-  box-shadow: 0 14px 30px rgba(95, 228, 155, 0.35);
+  color: #111111;
+  box-shadow: 0 14px 30px rgba(245, 123, 0, 0.35);
 }
 
 .button-secondary {
@@ -219,7 +219,7 @@ p {
 }
 
 .hero-card {
-  background: linear-gradient(180deg, rgba(20, 38, 32, 0.9), rgba(9, 19, 15, 0.9));
+  background: linear-gradient(180deg, rgba(30, 22, 14, 0.95), rgba(17, 17, 17, 0.95));
   border: 1px solid var(--border);
   border-radius: 32px;
   box-shadow: var(--shadow);
@@ -232,7 +232,7 @@ p {
   place-items: center;
   min-height: 420px;
   border-radius: 24px;
-  background: linear-gradient(135deg, rgba(138, 247, 176, 0.12), rgba(217, 255, 138, 0.1), rgba(16, 42, 35, 0.9));
+  background: linear-gradient(135deg, rgba(246, 162, 29, 0.18), rgba(255, 191, 90, 0.12), rgba(17, 17, 17, 0.96));
   border: 1px solid rgba(255, 255, 255, 0.08);
   overflow: hidden;
 }
@@ -260,9 +260,9 @@ p {
   place-items: center;
   font-size: 4.2rem;
   font-weight: 800;
-  color: #0d1e19;
-  background: linear-gradient(135deg, #c7ffd9, #ebffaf);
-  box-shadow: 0 18px 44px rgba(138, 247, 176, 0.22);
+  color: #111111;
+  background: linear-gradient(135deg, #ffd793, #f6a21d);
+  box-shadow: 0 18px 44px rgba(246, 162, 29, 0.25);
 }
 
 .coach-details {
@@ -314,8 +314,8 @@ p {
 }
 
 .program-card.featured {
-  background: linear-gradient(180deg, rgba(138, 247, 176, 0.09), rgba(12, 24, 20, 0.9));
-  border-color: rgba(138, 247, 176, 0.25);
+  background: linear-gradient(180deg, rgba(246, 162, 29, 0.11), rgba(26, 20, 12, 0.96));
+  border-color: rgba(246, 162, 29, 0.35);
 }
 
 .program-icon {
@@ -442,6 +442,28 @@ p {
 .contact-form textarea {
   resize: vertical;
   min-height: 110px;
+}
+
+.contact-phone {
+  margin: 18px 0 26px;
+  font-size: 1.05rem;
+  color: var(--text);
+}
+
+.contact-phone a,
+.social-link {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.social-link-wrap {
+  margin: 0 0 22px;
+}
+
+.form-status {
+  min-height: 22px;
+  color: var(--primary);
+  font-weight: 600;
 }
 
 .site-footer {
