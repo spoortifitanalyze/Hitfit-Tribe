@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
     <title>Hitfit Tribe Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -10,17 +11,127 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="../styles.css" />
-    <style>
-      body {
-        min-height: 100vh;
-        background: linear-gradient(180deg, #111111 0%, #1c1208 100%);
-        font-family: "Inter", sans-serif;
-        color: #fffaf5;
-      }
-    </style>
+    <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
-    <script src="../script.js"></script>
+    <div class="container admin-shell">
+      <div class="admin-card">
+        <div class="admin-header">
+          <h1>Hitfit Tribe Admin</h1>
+          <a href="/" target="_blank" rel="noreferrer">View website ↗</a>
+        </div>
+
+        <form id="admin-login" class="admin-login">
+          <label>
+            Admin email
+            <input id="admin-email" type="email" autocomplete="username" required />
+          </label>
+          <label>
+            Password
+            <input id="admin-password" type="password" autocomplete="current-password" required />
+          </label>
+          <button class="button button-primary" type="submit">Log in</button>
+          <div id="login-status" class="admin-status" aria-live="polite"></div>
+        </form>
+
+        <form id="admin-editor" class="admin-editor" hidden>
+          <section class="admin-section">
+            <h2>Profile photo</h2>
+            <p class="admin-hint">Shown in the hero section of the website. JPG, PNG, or WebP, up to 5 MB.</p>
+            <div class="admin-photo">
+              <div id="photo-preview" class="admin-photo-preview">HC</div>
+              <div class="admin-actions">
+                <label class="button button-secondary button-small">
+                  Upload photo
+                  <input id="photo-input" type="file" accept="image/jpeg,image/png,image/webp" hidden />
+                </label>
+                <button id="photo-remove" class="button button-secondary button-small" type="button">Remove photo</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="admin-section">
+            <h2>About</h2>
+            <label>
+              Heading
+              <input id="about-heading" type="text" maxlength="200" />
+            </label>
+            <label>
+              Details
+              <textarea id="about-body" maxlength="5000"></textarea>
+            </label>
+            <p class="admin-hint">Leave a blank line between paragraphs.</p>
+          </section>
+
+          <section class="admin-section">
+            <h2>Training plans</h2>
+            <p class="admin-hint">Each plan appears as a card in the Coaching Programs section, in this order.</p>
+            <div id="plans-list" class="admin-editor"></div>
+            <div class="admin-actions">
+              <button id="add-plan" class="button button-secondary button-small" type="button">+ Add training plan</button>
+            </div>
+          </section>
+
+          <section class="admin-section">
+            <h2>Testimonials</h2>
+            <p class="admin-hint">Up to 3 testimonials. If there are none, the section is hidden on the website.</p>
+            <div id="testimonials-list" class="admin-editor"></div>
+            <div class="admin-actions">
+              <button id="add-testimonial" class="button button-secondary button-small" type="button">+ Add testimonial</button>
+            </div>
+          </section>
+
+          <div class="admin-actions">
+            <button class="button button-primary" type="submit">Save changes</button>
+            <button id="logout-button" class="button button-secondary" type="button">Log out</button>
+          </div>
+          <div id="save-status" class="admin-status" aria-live="polite"></div>
+        </form>
+      </div>
+    </div>
+
+    <template id="plan-template">
+      <div class="admin-item">
+        <div class="admin-item-header">
+          <span data-role="label">Plan</span>
+          <button class="button button-secondary button-small" data-action="remove" type="button">Remove</button>
+        </div>
+        <label>
+          Title
+          <input data-field="title" type="text" maxlength="120" placeholder="e.g. Half Marathon Mentorship" required />
+        </label>
+        <label>
+          Description
+          <textarea data-field="description" class="admin-short" maxlength="1500" placeholder="What the plan covers and how it works"></textarea>
+        </label>
+        <label>
+          Intended audience
+          <textarea data-field="audience" class="admin-short" maxlength="500" placeholder="e.g. Runners preparing for their first half marathon"></textarea>
+        </label>
+        <label>
+          Prerequisites
+          <textarea data-field="prerequisites" class="admin-short" maxlength="500" placeholder="e.g. Comfortably running 10K"></textarea>
+        </label>
+      </div>
+    </template>
+
+    <template id="testimonial-template">
+      <div class="admin-item">
+        <div class="admin-item-header">
+          <span data-role="label">Testimonial</span>
+          <button class="button button-secondary button-small" data-action="remove" type="button">Remove</button>
+        </div>
+        <label>
+          Name
+          <input data-field="name" type="text" maxlength="80" placeholder="e.g. Priya S." required />
+        </label>
+        <label>
+          Comment
+          <textarea data-field="comment" class="admin-short" maxlength="1000" placeholder="What they said about the coaching" required></textarea>
+        </label>
+      </div>
+    </template>
+
+    <script src="/admin/admin.js"></script>
   </body>
 </html>

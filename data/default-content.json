@@ -1,0 +1,53 @@
+{
+  "profilePhoto": "",
+  "about": {
+    "heading": "Built for runners who want more than just mileage.",
+    "body": "Hitendra Choudhary, an avid marathoner including a Boston Marathon finisher, brings real race experience and practical endurance coaching to every athlete. At Hitfit Tribe, the goal is simple: help runners become stronger, more resilient, and more confident in their training.\n\nWhether you are just starting your running journey or preparing for your next race, the coaching approach blends endurance training, strength work, mobility, and mindset support so you can stay consistent and keep improving without burning out."
+  },
+  "plans": [
+    {
+      "title": "Beginner Run Foundation",
+      "description": "Build confidence, improve consistency, and learn proper technique without overwhelm through structured weekly plans and a progressive build-up.",
+      "audience": "New runners or anyone returning to running after a long break.",
+      "prerequisites": "None. Able to walk briskly for 30 minutes."
+    },
+    {
+      "title": "5K to 10K Performance",
+      "description": "Improve speed, confidence, and endurance with targeted interval, threshold, and VO2 max sessions plus race-specific planning and recovery strategies.",
+      "audience": "Runners who can already complete a 5K and want to get faster or step up to 10K.",
+      "prerequisites": "Comfortably running 5K, at least 3 runs per week."
+    },
+    {
+      "title": "Half Marathon Mentorship",
+      "description": "Smart training volume, strength work, long-run progression, fueling guidance, and pacing strategy for race day.",
+      "audience": "Runners preparing for their first or next half marathon.",
+      "prerequisites": "Comfortably running 10K."
+    },
+    {
+      "title": "Full Marathon Training",
+      "description": "A structured build-up for race-day readiness, with progressive long runs, workouts, recovery, and weekly check-ins.",
+      "audience": "Experienced runners targeting a full marathon.",
+      "prerequisites": "Recent half marathon finish and a consistent weekly running base."
+    },
+    {
+      "title": "Triathlon Training",
+      "description": "Balanced swim, bike, and run progression with brick sessions and a plan built around your recovery capacity.",
+      "audience": "Athletes preparing for sprint, Olympic, or longer triathlons.",
+      "prerequisites": "Able to swim continuously and ride a bike comfortably."
+    }
+  ],
+  "testimonials": [
+    {
+      "name": "Priya S.",
+      "comment": "I used to dread every run. With Hitendra’s structure and support, I built consistency and finally finished my first 10K feeling strong."
+    },
+    {
+      "name": "Rohit M.",
+      "comment": "The plans were realistic, the guidance was clear, and the mindset coaching helped me stay calm under pressure during race week."
+    },
+    {
+      "name": "Ananya K.",
+      "comment": "Hitendra brings a rare mix of discipline and encouragement. His coaching didn’t just improve my pace—it made me more confident."
+    }
+  ]
+}

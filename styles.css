@@ -39,6 +39,10 @@ img {
   display: block;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 .container {
   width: min(1120px, calc(100% - 32px));
   margin: 0 auto;
@@ -265,6 +269,17 @@ p {
   box-shadow: 0 18px 44px rgba(246, 162, 29, 0.25);
 }
 
+.coach-portrait.has-photo {
+  overflow: hidden;
+  background: none;
+}
+
+.coach-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .coach-details {
   padding-top: 22px;
 }
@@ -339,6 +354,23 @@ p {
 
 .program-card li {
   margin-bottom: 8px;
+  color: var(--muted);
+}
+
+.program-details {
+  margin: 22px 0 0;
+}
+
+.program-details dt {
+  color: var(--primary);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.program-details dd {
+  margin: 2px 0 14px;
   color: var(--muted);
 }
 
@@ -495,7 +527,7 @@ p {
 .admin-card {
   width: 100%;
   min-height: calc(100vh - 48px);
-  background: rgba(17, 39, 32, 0.9);
+  background: rgba(28, 24, 20, 0.92);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 24px;
   box-shadow: var(--shadow);
@@ -507,6 +539,10 @@ p {
   display: grid;
   gap: 18px;
   width: 100%;
+}
+
+.admin-login {
+  max-width: 420px;
 }
 
 .admin-login label,
@@ -557,6 +593,104 @@ p {
 
 .admin-error {
   color: #ff8d8d;
+}
+
+.admin-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.admin-header h1 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.admin-header a {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.admin-section {
+  display: grid;
+  gap: 16px;
+  padding: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.admin-section h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.admin-hint {
+  margin: -8px 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 400;
+}
+
+.admin-photo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+}
+
+.admin-photo-preview {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: #111111;
+  background: linear-gradient(135deg, #ffd793, #f6a21d);
+}
+
+.admin-photo-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.admin-item {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.admin-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.admin-editor textarea.admin-short {
+  min-height: 90px;
+}
+
+.button-small {
+  min-height: 36px;
+  padding: 0 14px;
+  font-size: 0.85rem;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 @media (max-width: 900px) {

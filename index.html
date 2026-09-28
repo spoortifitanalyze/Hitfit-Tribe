@@ -67,7 +67,7 @@
           <div class="hero-card">
             <div class="coach-photo-card">
               <div class="coach-badge">Coach</div>
-              <div class="coach-portrait">
+              <div id="coach-portrait" class="coach-portrait">
                 <span>HC</span>
               </div>
             </div>
@@ -83,9 +83,12 @@
         <div class="container two-col">
           <div>
             <p class="section-tag">About</p>
-            <h2>Built for runners who want more than just mileage.</h2>
+            <h2 id="about-heading">Built for runners who want more than just mileage.</h2>
           </div>
-          <div id="about-content"></div>
+          <div id="about-content">
+            <p>Hitendra Choudhary, an avid marathoner including a Boston Marathon finisher, brings real race experience and practical endurance coaching to every athlete. At Hitfit Tribe, the goal is simple: help runners become stronger, more resilient, and more confident in their training.</p>
+            <p>Whether you are just starting your running journey or preparing for your next race, the coaching approach blends endurance training, strength work, mobility, and mindset support so you can stay consistent and keep improving without burning out.</p>
+          </div>
         </div>
       </section>
 
@@ -96,40 +99,65 @@
             <h2>Programs tailored to every stage of your running journey</h2>
           </div>
 
-          <div id="training-content" class="training-content"></div>
-
-          <div class="card-grid">
+          <div id="plans-content" class="card-grid">
             <article class="program-card">
               <div class="program-icon">01</div>
               <h3>Beginner Run Foundation</h3>
-              <p>For new runners who want to build confidence, improve consistency, and learn proper technique without overwhelm.</p>
-              <ul>
-                <li>Structured weekly plans</li>
-                <li>Technique & form guidance</li>
-                <li>Progressive build-up</li>
-              </ul>
+              <p>Build confidence, improve consistency, and learn proper technique without overwhelm through structured weekly plans and a progressive build-up.</p>
+              <dl class="program-details">
+                <dt>Who it’s for</dt>
+                <dd>New runners or anyone returning to running after a long break.</dd>
+                <dt>Prerequisites</dt>
+                <dd>None. Able to walk briskly for 30 minutes.</dd>
+              </dl>
             </article>
 
-            <article class="program-card featured">
+            <article class="program-card">
               <div class="program-icon">02</div>
               <h3>5K to 10K Performance</h3>
-              <p>Ideal for runners ready to improve speed, confidence, and endurance with targeted interval and threshold work.</p>
-              <ul>
-                <li>Race-specific planning</li>
-                <li>VO2 max & speed sessions</li>
-                <li>Recovery strategies</li>
-              </ul>
+              <p>Improve speed, confidence, and endurance with targeted interval, threshold, and VO2 max sessions plus race-specific planning and recovery strategies.</p>
+              <dl class="program-details">
+                <dt>Who it’s for</dt>
+                <dd>Runners who can already complete a 5K and want to get faster or step up to 10K.</dd>
+                <dt>Prerequisites</dt>
+                <dd>Comfortably running 5K, at least 3 runs per week.</dd>
+              </dl>
             </article>
 
             <article class="program-card">
               <div class="program-icon">03</div>
               <h3>Half Marathon Mentorship</h3>
-              <p>Comprehensive training for athletes preparing for longer events with smart training volume, strength, and pacing strategy.</p>
-              <ul>
-                <li>Long run progression</li>
-                <li>Fueling guidance</li>
-                <li>Race-day preparation</li>
-              </ul>
+              <p>Smart training volume, strength work, long-run progression, fueling guidance, and pacing strategy for race day.</p>
+              <dl class="program-details">
+                <dt>Who it’s for</dt>
+                <dd>Runners preparing for their first or next half marathon.</dd>
+                <dt>Prerequisites</dt>
+                <dd>Comfortably running 10K.</dd>
+              </dl>
+            </article>
+
+            <article class="program-card">
+              <div class="program-icon">04</div>
+              <h3>Full Marathon Training</h3>
+              <p>A structured build-up for race-day readiness, with progressive long runs, workouts, recovery, and weekly check-ins.</p>
+              <dl class="program-details">
+                <dt>Who it’s for</dt>
+                <dd>Experienced runners targeting a full marathon.</dd>
+                <dt>Prerequisites</dt>
+                <dd>Recent half marathon finish and a consistent weekly running base.</dd>
+              </dl>
+            </article>
+
+            <article class="program-card">
+              <div class="program-icon">05</div>
+              <h3>Triathlon Training</h3>
+              <p>Balanced swim, bike, and run progression with brick sessions and a plan built around your recovery capacity.</p>
+              <dl class="program-details">
+                <dt>Who it’s for</dt>
+                <dd>Athletes preparing for sprint, Olympic, or longer triathlons.</dd>
+                <dt>Prerequisites</dt>
+                <dd>Able to swim continuously and ride a bike comfortably.</dd>
+              </dl>
             </article>
           </div>
         </div>
@@ -142,7 +170,20 @@
             <h2>Runners trust the process and feel the difference</h2>
           </div>
 
-          <div id="testimonials-content" class="testimonial-grid"></div>
+          <div id="testimonials-content" class="testimonial-grid">
+            <blockquote class="testimonial-card">
+              <p>“I used to dread every run. With Hitendra’s structure and support, I built consistency and finally finished my first 10K feeling strong.”</p>
+              <footer><strong>Priya S.</strong></footer>
+            </blockquote>
+            <blockquote class="testimonial-card">
+              <p>“The plans were realistic, the guidance was clear, and the mindset coaching helped me stay calm under pressure during race week.”</p>
+              <footer><strong>Rohit M.</strong></footer>
+            </blockquote>
+            <blockquote class="testimonial-card">
+              <p>“Hitendra brings a rare mix of discipline and encouragement. His coaching didn’t just improve my pace—it made me more confident.”</p>
+              <footer><strong>Ananya K.</strong></footer>
+            </blockquote>
+          </div>
         </div>
       </section>
 
