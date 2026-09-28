@@ -2,6 +2,12 @@ const MAX_PLANS = 12;
 const MAX_TESTIMONIALS = 3;
 const TOKEN_KEY = 'hitfit-tribe-admin-token';
 
+// When the admin page is served by the local Node server, the API is on the same origin.
+// On GitHub Pages it lives on the separately hosted server set in config.js.
+const IS_LOCAL = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+const API_BASE = IS_LOCAL ? '' : (window.HITFIT_CONFIG?.apiBase || '').replace(/\/+$/, '');
+const SITE_ROOT = new URL('../', window.location.href);
+
 const loginForm = document.getElementById('admin-login');
 const loginStatus = document.getElementById('login-status');
 const editorForm = document.getElementById('admin-editor');
@@ -18,6 +24,8 @@ const adminsStatus = document.getElementById('admins-status');
 const newAdminInput = document.getElementById('new-admin-email');
 
 let profilePhoto = '';
+// Newly uploaded photos aren't on GitHub Pages until the next deploy, so preview them from the file.
+let photoPreviewSrc = '';
 
 const getToken = () => {
   try {
@@ -42,14 +50,20 @@ const setStatus = (element, message, isError = false) => {
 };
 
 const api = async (path, options = {}) => {
-  const response = await fetch(path, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${getToken()}`,
-      ...options.headers
-    }
-  });
+  let response;
+  try {
+    response = await fetch(`${API_BASE}${path}`, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getToken()}`,
+        ...options.headers
+      }
+    });
+  } catch {
+    // The free server sleeps when idle; the first request after a while can take ~30 seconds or fail.
+    throw new Error('Could not reach the admin server. It may be waking up, so please try again in 30 seconds.');
+  }
   const body = await response.json().catch(() => ({}));
   if (response.status === 401 && path !== '/api/login') showLogin('Your session has expired. Please log in again.');
   if (!response.ok) throw new Error(body.error || 'Something went wrong.');
@@ -96,7 +110,7 @@ const renderPhotoPreview = () => {
     return;
   }
   const image = document.createElement('img');
-  image.src = profilePhoto;
+  image.src = photoPreviewSrc || new URL(profilePhoto, SITE_ROOT).href;
   image.alt = 'Profile photo preview';
   photoPreview.replaceChildren(image);
 };
@@ -120,11 +134,10 @@ photoInput.addEventListener('change', async () => {
 
   try {
     setStatus(saveStatus, 'Uploading photo…');
-    const { url } = await api('/api/photo', {
-      method: 'POST',
-      body: JSON.stringify({ dataUrl: await readFileAsDataUrl(file) })
-    });
-    profilePhoto = url;
+    const dataUrl = await readFileAsDataUrl(file);
+    const { path } = await api('/api/photo', { method: 'POST', body: JSON.stringify({ dataUrl }) });
+    profilePhoto = path;
+    photoPreviewSrc = dataUrl;
     renderPhotoPreview();
     setStatus(saveStatus, 'Photo uploaded. Click “Save changes” to publish it.');
   } catch (error) {
@@ -134,6 +147,7 @@ photoInput.addEventListener('change', async () => {
 
 document.getElementById('photo-remove').addEventListener('click', () => {
   profilePhoto = '';
+  photoPreviewSrc = '';
   renderPhotoPreview();
   setStatus(saveStatus, 'Photo removed. Click “Save changes” to publish.');
 });
@@ -142,6 +156,7 @@ document.getElementById('photo-remove').addEventListener('click', () => {
 
 const fillEditor = (content) => {
   profilePhoto = content.profilePhoto || '';
+  photoPreviewSrc = '';
   renderPhotoPreview();
   document.getElementById('about-heading').value = content.about?.heading || '';
   document.getElementById('about-body').value = content.about?.body || '';
@@ -265,7 +280,9 @@ editorForm.addEventListener('submit', async (event) => {
         testimonials: readItems(testimonialsList)
       })
     });
-    setStatus(saveStatus, 'Saved. The website now shows your changes.');
+    setStatus(saveStatus, IS_LOCAL
+      ? 'Saved. The website now shows your changes.'
+      : 'Saved. The website will show your changes in about a minute.');
   } catch (error) {
     setStatus(saveStatus, error.message, true);
   }
