@@ -1,181 +1,86 @@
-const STORAGE_KEY = 'hitfit-tribe-content';
-const ADMIN_EMAILS = ['bheed.spoorti@gmail.com', 'hitendra2309@gmail.com'];
-
-const defaultContent = {
-  about: `
-    <p>
-      Hitendra Choudhary, an avid marathoner including a Boston Marathon finisher, brings real race experience and practical endurance coaching to every athlete. At Hitfit Tribe, the goal is simple: help runners become stronger, more resilient, and more confident in their training.
-    </p>
-    <p>
-      Whether you are just starting your running journey or preparing for your next race, the coaching approach blends endurance training, strength work, mobility, and mindset support so you can stay consistent and keep improving without burning out.
-    </p>
-  `,
-  training: `
-    <h3>Personalized Training Plans</h3>
-    <p>Every athlete receives a structured plan built around their fitness level, race goals, and recovery capacity.</p>
-    <ul>
-      <li>Progressive weekly structure with clear mileage targets</li>
-      <li>Strength, mobility, and technique sessions for long-term performance</li>
-      <li>Weekly check-ins and adjustments based on recovery and progress</li>
-      <li>Full Marathon Training Programs for race-day readiness and endurance build-up</li>
-      <li>Triathlon Training Programs for swim, bike, and run progression</li>
-    </ul>
-  `,
-  testimonials: `
-    <blockquote class="testimonial-card">
-      <p>“I used to dread every run. With Hitendra’s structure and support, I built consistency and finally finished my first 10K feeling strong.”</p>
-      <footer>
-        <strong>Priya S.</strong>
-        <span>Beginner Runner</span>
-      </footer>
-    </blockquote>
-    <blockquote class="testimonial-card">
-      <p>“The plans were realistic, the guidance was clear, and the mindset coaching helped me stay calm under pressure during race week.”</p>
-      <footer>
-        <strong>Rohit M.</strong>
-        <span>5K to 10K Athlete</span>
-      </footer>
-    </blockquote>
-    <blockquote class="testimonial-card">
-      <p>“Hitendra brings a rare mix of discipline and encouragement. His coaching didn’t just improve my pace—it made me more confident.”</p>
-      <footer>
-        <strong>Ananya K.</strong>
-        <span>Half Marathon Runner</span>
-      </footer>
-    </blockquote>
-  `
+const createElement = (tag, className, text) => {
+  const element = document.createElement(tag);
+  if (className) element.className = className;
+  if (text) element.textContent = text;
+  return element;
 };
 
-const getStoredContent = () => {
+const renderAbout = (about) => {
+  const heading = document.getElementById('about-heading');
+  if (heading && about.heading) heading.textContent = about.heading;
+
+  const container = document.getElementById('about-content');
+  if (!container) return;
+  container.replaceChildren(
+    ...about.body
+      .split(/\n\s*\n/)
+      .map((paragraph) => paragraph.trim())
+      .filter(Boolean)
+      .map((paragraph) => createElement('p', '', paragraph))
+  );
+};
+
+const renderProfilePhoto = (photoUrl) => {
+  const portrait = document.getElementById('coach-portrait');
+  if (!portrait || !photoUrl) return;
+  const image = createElement('img');
+  image.src = photoUrl;
+  image.alt = 'Coach Hitendra Choudhary';
+  portrait.replaceChildren(image);
+  portrait.classList.add('has-photo');
+};
+
+const renderPlans = (plans) => {
+  const container = document.getElementById('plans-content');
+  if (!container) return;
+  container.replaceChildren(
+    ...plans.map((plan, index) => {
+      const card = createElement('article', 'program-card');
+      card.append(
+        createElement('div', 'program-icon', String(index + 1).padStart(2, '0')),
+        createElement('h3', '', plan.title)
+      );
+      if (plan.description) card.append(createElement('p', '', plan.description));
+
+      const details = createElement('dl', 'program-details');
+      [['Who it’s for', plan.audience], ['Prerequisites', plan.prerequisites]]
+        .filter(([, value]) => value)
+        .forEach(([label, value]) => details.append(createElement('dt', '', label), createElement('dd', '', value)));
+      if (details.children.length) card.append(details);
+
+      return card;
+    })
+  );
+};
+
+const renderTestimonials = (testimonials) => {
+  const section = document.getElementById('testimonials');
+  const container = document.getElementById('testimonials-content');
+  if (!container) return;
+  if (section) section.hidden = testimonials.length === 0;
+  container.replaceChildren(
+    ...testimonials.map((item) => {
+      const card = createElement('blockquote', 'testimonial-card');
+      const footer = createElement('footer');
+      footer.append(createElement('strong', '', item.name));
+      card.append(createElement('p', '', `“${item.comment}”`), footer);
+      return card;
+    })
+  );
+};
+
+// The page ships with default content in the HTML; this swaps in whatever the admin saved.
+const renderHomepage = async () => {
   try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
-    return { ...defaultContent, ...(saved || {}) };
-  } catch {
-    return { ...defaultContent };
-  }
-};
-
-const setStoredContent = (content) => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(content));
-};
-
-const renderHomepage = () => {
-  const content = getStoredContent();
-
-  const aboutContainer = document.getElementById('about-content');
-  if (aboutContainer) {
-    aboutContainer.innerHTML = content.about;
-  }
-
-  const trainingContainer = document.getElementById('training-content');
-  if (trainingContainer) {
-    trainingContainer.innerHTML = content.training;
-  }
-
-  const testimonialsContainer = document.getElementById('testimonials-content');
-  if (testimonialsContainer) {
-    testimonialsContainer.innerHTML = content.testimonials;
-  }
-};
-
-const isAdminEmail = (email) => ADMIN_EMAILS.includes(String(email || '').trim().toLowerCase());
-
-const getAdminRoute = () => {
-  const path = window.location.pathname.replace(/\/+$/, '');
-  const adminPath = '/admin';
-  return path === adminPath || path.endsWith('/admin') || path.includes('/admin');
-};
-
-const renderAdminPage = () => {
-  if (!getAdminRoute()) return;
-
-  const currentContent = getStoredContent();
-
-  document.body.innerHTML = `
-    <div class="container admin-shell">
-      <div class="admin-card">
-        <h2>Hitfit Tribe Admin</h2>
-        <div id="admin-login" class="admin-login">
-          <label>
-            Admin Email
-            <input id="admin-email" type="email" placeholder="Enter your email" />
-          </label>
-          <button id="login-button" class="button button-primary" type="button">Access Dashboard</button>
-          <div id="login-status" class="admin-status"></div>
-        </div>
-
-        <div id="admin-editor" class="admin-editor" style="display:none;">
-          <label>
-            About Hitendra Choudhary
-            <div id="about-input" contenteditable="true" spellcheck="true">${currentContent.about.trim()}</div>
-          </label>
-
-          <label>
-            Training plan details
-            <div id="training-input" contenteditable="true" spellcheck="true">${currentContent.training.trim()}</div>
-          </label>
-
-          <label>
-            Testimonials
-            <div id="testimonials-input" contenteditable="true" spellcheck="true">${currentContent.testimonials.trim()}</div>
-          </label>
-
-          <div class="admin-actions">
-            <button id="save-button" class="button button-primary" type="button">Save Changes</button>
-            <button id="logout-button" class="button button-secondary" type="button">Log out</button>
-          </div>
-          <div id="save-status" class="admin-status"></div>
-        </div>
-      </div>
-    </div>
-  `;
-
-  const loginButton = document.getElementById('login-button');
-  const logoutButton = document.getElementById('logout-button');
-  const saveButton = document.getElementById('save-button');
-  const loginStatus = document.getElementById('login-status');
-  const saveStatus = document.getElementById('save-status');
-  const adminLogin = document.getElementById('admin-login');
-  const adminEditor = document.getElementById('admin-editor');
-
-  loginButton.addEventListener('click', () => {
-    const email = document.getElementById('admin-email').value || '';
-    if (!isAdminEmail(email)) {
-      loginStatus.textContent = 'Access denied. This page is restricted to approved email addresses.';
-      loginStatus.classList.add('admin-error');
-      return;
-    }
-
-    localStorage.setItem('hitfit-tribe-admin-email', email.trim().toLowerCase());
-    loginStatus.textContent = '';
-    adminLogin.style.display = 'none';
-    adminEditor.style.display = 'grid';
-  });
-
-  logoutButton.addEventListener('click', () => {
-    localStorage.removeItem('hitfit-tribe-admin-email');
-    adminLogin.style.display = 'grid';
-    adminEditor.style.display = 'none';
-    document.getElementById('admin-email').value = '';
-    saveStatus.textContent = '';
-  });
-
-  saveButton.addEventListener('click', () => {
-    const nextContent = {
-      about: document.getElementById('about-input').innerHTML,
-      training: document.getElementById('training-input').innerHTML,
-      testimonials: document.getElementById('testimonials-input').innerHTML
-    };
-
-    setStoredContent(nextContent);
-    saveStatus.textContent = 'Content updated successfully.';
-    renderHomepage();
-  });
-
-  const authorizedEmail = (localStorage.getItem('hitfit-tribe-admin-email') || '').trim().toLowerCase();
-  if (isAdminEmail(authorizedEmail)) {
-    adminLogin.style.display = 'none';
-    adminEditor.style.display = 'grid';
+    const response = await fetch('/api/content', { cache: 'no-store' });
+    if (!response.ok) return;
+    const content = await response.json();
+    renderProfilePhoto(content.profilePhoto);
+    renderAbout(content.about);
+    renderPlans(content.plans);
+    renderTestimonials(content.testimonials);
+  } catch (error) {
+    console.warn('Could not load saved content, showing defaults:', error);
   }
 };
 
@@ -207,11 +112,6 @@ const saveContactFormResponse = async (payload) => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  if (getAdminRoute()) {
-    renderAdminPage();
-    return;
-  }
-
   renderHomepage();
 
   const contactForm = document.getElementById('contact-form');

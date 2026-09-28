@@ -1,0 +1,13 @@
+{
+  "name": "hitfit-tribe",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Hitfit Tribe website with an admin page for editing site content.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
