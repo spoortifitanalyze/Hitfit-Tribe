@@ -1,16 +1,18 @@
 :root {
-  --bg: #111111;
-  --bg-soft: #1a1a1a;
-  --panel: #1f1f1f;
-  --panel-alt: #2a261f;
-  --card: rgba(28, 24, 20, 0.92);
-  --text: #fffaf5;
-  --muted: #f3dfc4;
-  --primary: #f6a21d;
-  --primary-strong: #f57b00;
-  --accent: #ffbf5a;
-  --border: rgba(246, 162, 29, 0.32);
-  --shadow: 0 18px 45px rgba(0, 0, 0, 0.38);
+  /* Soft, warm palette: charcoal instead of black, off-white instead of white, apricot instead of bright orange. */
+  --bg: #2b2623;
+  --bg-deep: #241f1c;
+  --card: #36302b;
+  --card-strong: #3d3631;
+  --text: #ede4d9;
+  --muted: #c9bcae;
+  --primary: #e0a36b;
+  --primary-strong: #cf8b53;
+  --accent: #ecc596;
+  --on-primary: #2b2623;
+  --border: rgba(224, 163, 107, 0.26);
+  --hairline: rgba(237, 228, 217, 0.08);
+  --shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
 }
 
 * {
@@ -24,7 +26,7 @@ html {
 body {
   margin: 0;
   font-family: "Inter", sans-serif;
-  background: linear-gradient(180deg, #111111 0%, #1c1208 100%);
+  background: linear-gradient(180deg, var(--bg) 0%, var(--bg-deep) 100%);
   color: var(--text);
   line-height: 1.6;
 }
@@ -87,9 +89,9 @@ p {
   position: sticky;
   top: 0;
   z-index: 40;
-  background: rgba(7, 19, 15, 0.72);
+  background: rgba(43, 38, 35, 0.85);
   backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid var(--hairline);
 }
 
 .nav-wrap {
@@ -112,6 +114,13 @@ p {
   display: block;
 }
 
+.brand-logo {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 .brand-mark {
   width: 42px;
   height: 42px;
@@ -119,7 +128,7 @@ p {
   display: grid;
   place-items: center;
   background: linear-gradient(135deg, var(--primary), var(--accent));
-  color: #111111;
+  color: var(--on-primary);
   font-weight: 900;
 }
 
@@ -144,6 +153,10 @@ p {
   padding: 0 22px;
   font-weight: 700;
   border-radius: 999px;
+  border: 1px solid transparent;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -153,12 +166,12 @@ p {
 
 .button-primary {
   background: linear-gradient(135deg, var(--primary), var(--primary-strong));
-  color: #111111;
-  box-shadow: 0 14px 30px rgba(245, 123, 0, 0.35);
+  color: var(--on-primary);
+  box-shadow: 0 8px 20px rgba(207, 139, 83, 0.2);
 }
 
 .button-secondary {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(237, 228, 217, 0.03);
   border: 1px solid var(--border);
   color: var(--text);
 }
@@ -207,8 +220,8 @@ p {
 .stats li {
   padding: 20px 18px;
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(237, 228, 217, 0.03);
+  border: 1px solid var(--hairline);
 }
 
 .stats strong {
@@ -223,7 +236,7 @@ p {
 }
 
 .hero-card {
-  background: linear-gradient(180deg, rgba(30, 22, 14, 0.95), rgba(17, 17, 17, 0.95));
+  background: var(--card);
   border: 1px solid var(--border);
   border-radius: 32px;
   box-shadow: var(--shadow);
@@ -236,8 +249,8 @@ p {
   place-items: center;
   min-height: 420px;
   border-radius: 24px;
-  background: linear-gradient(135deg, rgba(246, 162, 29, 0.18), rgba(255, 191, 90, 0.12), rgba(17, 17, 17, 0.96));
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(135deg, rgba(224, 163, 107, 0.16), rgba(236, 197, 150, 0.08), var(--bg-deep));
+  border: 1px solid var(--hairline);
   overflow: hidden;
 }
 
@@ -245,7 +258,7 @@ p {
   position: absolute;
   top: 18px;
   left: 18px;
-  background: rgba(7, 19, 15, 0.8);
+  background: rgba(43, 38, 35, 0.85);
   border: 1px solid var(--border);
   color: var(--primary);
   font-size: 0.75rem;
@@ -264,9 +277,9 @@ p {
   place-items: center;
   font-size: 4.2rem;
   font-weight: 800;
-  color: #111111;
-  background: linear-gradient(135deg, #ffd793, #f6a21d);
-  box-shadow: 0 18px 44px rgba(246, 162, 29, 0.25);
+  color: var(--on-primary);
+  background: linear-gradient(135deg, var(--accent), var(--primary));
+  box-shadow: 0 12px 30px rgba(224, 163, 107, 0.16);
 }
 
 .coach-portrait.has-photo {
@@ -319,7 +332,7 @@ p {
 .blog-card,
 .contact-form {
   background: var(--card);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--hairline);
   border-radius: 22px;
   box-shadow: var(--shadow);
 }
@@ -329,8 +342,8 @@ p {
 }
 
 .program-card.featured {
-  background: linear-gradient(180deg, rgba(246, 162, 29, 0.11), rgba(26, 20, 12, 0.96));
-  border-color: rgba(246, 162, 29, 0.35);
+  background: linear-gradient(180deg, rgba(224, 163, 107, 0.1), var(--card));
+  border-color: var(--border);
 }
 
 .program-icon {
@@ -340,7 +353,7 @@ p {
   width: 52px;
   height: 52px;
   border-radius: 14px;
-  background: rgba(138, 247, 176, 0.12);
+  background: rgba(224, 163, 107, 0.14);
   color: var(--primary);
   font-weight: 800;
   margin-bottom: 18px;
@@ -378,19 +391,92 @@ p {
   max-width: 700px;
 }
 
-.testimonial-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  margin-top: 30px;
+.testimonial-carousel {
+  max-width: 760px;
+  margin: 30px auto 0;
+}
+
+/* All cards share one grid cell, so the track is as tall as the longest testimonial and never jumps. */
+.testimonial-track {
+  display: grid;
 }
 
 .testimonial-card {
-  padding: 28px 22px;
+  grid-area: 1 / 1;
+  padding: 36px 34px;
   margin: 0;
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease, visibility 0.6s;
+}
+
+.testimonial-card.is-active {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+
+.testimonial-card.is-leaving {
+  transform: translateX(-24px);
 }
 
 .testimonial-card p {
   color: var(--text);
-  margin-bottom: 26px;
+  font-size: 1.12rem;
+  margin-bottom: 22px;
+}
+
+.testimonial-card footer strong {
+  color: var(--primary);
+}
+
+.carousel-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 22px;
+}
+
+.carousel-arrow {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.carousel-arrow:hover,
+.carousel-dots button[aria-current="true"] {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.carousel-dots {
+  display: flex;
+  gap: 8px;
+}
+
+.carousel-dots button {
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--primary);
+  background: transparent;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .testimonial-card {
+    transition: none;
+  }
 }
 
 .testimonial-card footer {
@@ -459,16 +545,22 @@ p {
 .contact-form textarea {
   width: 100%;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--hairline);
   padding: 13px 14px;
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(237, 228, 217, 0.03);
   color: var(--text);
   font: inherit;
 }
 
+/* Native dropdown lists ignore translucent backgrounds, so give the options solid colours. */
+.contact-form select option {
+  background: var(--card-strong);
+  color: var(--text);
+}
+
 .contact-form input::placeholder,
 .contact-form textarea::placeholder {
-  color: rgba(238, 250, 244, 0.45);
+  color: rgba(237, 228, 217, 0.4);
 }
 
 .contact-form textarea {
@@ -499,7 +591,7 @@ p {
 }
 
 .site-footer {
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid var(--hairline);
   padding: 28px 0 42px;
 }
 
@@ -527,8 +619,8 @@ p {
 .admin-card {
   width: 100%;
   min-height: calc(100vh - 48px);
-  background: rgba(28, 24, 20, 0.92);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--card);
+  border: 1px solid var(--hairline);
   border-radius: 24px;
   box-shadow: var(--shadow);
   padding: 28px;
@@ -560,9 +652,9 @@ p {
 .admin-editor textarea,
 .admin-editor [contenteditable="true"] {
   width: 100%;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--hairline);
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(237, 228, 217, 0.03);
   color: var(--text);
   font: inherit;
   padding: 14px 16px;
@@ -593,7 +685,7 @@ p {
 }
 
 .admin-error {
-  color: #ff8d8d;
+  color: #e89a8f;
 }
 
 .admin-header {
@@ -619,9 +711,9 @@ p {
   display: grid;
   gap: 16px;
   padding: 22px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--hairline);
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(237, 228, 217, 0.03);
 }
 
 .admin-section h2 {
@@ -652,8 +744,8 @@ p {
   overflow: hidden;
   font-size: 2.4rem;
   font-weight: 800;
-  color: #111111;
-  background: linear-gradient(135deg, #ffd793, #f6a21d);
+  color: var(--on-primary);
+  background: linear-gradient(135deg, var(--accent), var(--primary));
 }
 
 .admin-photo-preview img {
@@ -713,7 +805,7 @@ p {
   align-items: center;
   gap: 12px;
   padding: 10px 14px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--hairline);
   border-radius: 12px;
   overflow-wrap: anywhere;
 }
