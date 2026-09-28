@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: hitfit-tribe-admin
+    runtime: node
+    plan: free
+    buildCommand: echo "No build step"
+    startCommand: node server.js
+    envVars:
+      - key: GITHUB_TOKEN
+        sync: false
+      - key: GITHUB_REPO
+        value: spoortifitanalyze/Hitfit-Tribe
+      - key: GITHUB_BRANCH
+        value: main
+      - key: ALLOWED_ORIGINS
+        value: https://spoortifitanalyze.github.io

@@ -1,6 +1,2 @@
 node_modules/
-data/content.json
-data/admins.json
-data/*.tmp
-uploads/*
-!uploads/.gitkeep
+local-data/

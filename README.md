@@ -11,12 +11,22 @@ Website for running coach Hitendra Choudhary, with an admin page for editing the
 
 ## Files
 - `index.html`, `styles.css`, `script.js` – the public website
-- `admin/` – the admin page (`/admin`)
-- `server.js` – Node server that hosts the site and the admin API (no dependencies)
+- `admin/` – the admin page (`/admin/`); `admin/config.js` holds the admin server's URL
+- `server.js` – admin API server (no dependencies), hosted on Render
+- `render.yaml` – Render setup for `server.js`
 - `data/default-content.json` – starting content, used until the admin saves for the first time
-- `data/content.json` – content saved from the admin page (created automatically, not committed)
-- `data/admins.json` – admin emails added by owners (created automatically, not committed)
-- `uploads/` – uploaded profile photos (not committed)
+- `data/content.json` – content saved from the admin page (committed by the server)
+- `data/admins.json` – admin emails added by owners (committed by the server)
+- `uploads/` – uploaded profile photos (committed by the server)
+
+## How it works
+```
+Admin page (GitHub Pages) ──► server.js (Render) ──► commits to this repo ──► GitHub Pages redeploys (~1 min)
+Website    (GitHub Pages) ──► reads data/content.json and uploads/ from the same site
+```
+
+- Website: https://spoortifitanalyze.github.io/Hitfit-Tribe/
+- Admin page: https://spoortifitanalyze.github.io/Hitfit-Tribe/admin/
 
 ## Run locally
 Requires Node.js 18 or newer.
@@ -26,7 +36,9 @@ npm start
 ```
 
 - Website: http://localhost:8000
-- Admin page: http://localhost:8000/admin
+- Admin page: http://localhost:8000/admin/
+
+Without `GITHUB_TOKEN`, changes are saved to `local-data/` (not committed) instead of GitHub.
 
 ## Admin page
 Log in by entering an approved admin email. There is no password. From there you can edit:
@@ -36,7 +48,9 @@ Log in by entering an approved admin email. There is no password. From there you
 - **Training plans** – each plan has a Title, Description, Intended audience, and Prerequisites
 - **Testimonials** – up to 3, each with a Name and Comment
 
-Click **Save changes** and the website shows the new content on the next page load.
+Click **Save changes**. The server commits the change to `main`, and the website shows it after GitHub Pages redeploys (about a minute).
+
+Because the server commits to `main`, run `git pull` before making code changes locally.
 
 ### Admin users
 - **Owners** (`bheed.spoorti@gmail.com`, `hitendra2309@gmail.com` by default) can always log in, and they are the only ones who see the **Admin users** section.
@@ -48,8 +62,20 @@ Click **Save changes** and the website shows the new content on the next page lo
 ## Configuration
 | Variable | Default | Purpose |
 | --- | --- | --- |
+| `GITHUB_TOKEN` | _(none – local mode)_ | Token the server uses to commit content to GitHub |
+| `GITHUB_REPO` | `spoortifitanalyze/Hitfit-Tribe` | Repo to commit to |
+| `GITHUB_BRANCH` | `main` | Branch GitHub Pages deploys from |
+| `ALLOWED_ORIGINS` | `https://spoortifitanalyze.github.io` | Sites allowed to call the admin API |
 | `OWNER_EMAILS` | `bheed.spoorti@gmail.com,hitendra2309@gmail.com` | Comma-separated owner emails (can log in and manage admin users) |
 | `PORT` | `8000` | Port the server listens on |
 
-## Hosting
-Because the admin page saves content on the server, the site needs a host that runs Node.js and keeps files between restarts (for example a VPS, or Render/Railway with a persistent disk mounted for `data/` and `uploads/`). Static-only hosts such as GitHub Pages can't run the admin backend.
+## Deploying the admin server (one-time setup)
+1. **Create a GitHub token.** GitHub → Settings → Developer settings → Fine-grained personal access tokens → *Generate new token*.
+   - Repository access: *Only select repositories* → `Hitfit-Tribe`
+   - Permissions: *Contents* → **Read and write**
+   - Copy the token.
+2. **Deploy on Render.** Sign in at https://render.com with GitHub → *New* → *Blueprint* → pick this repo. Render reads `render.yaml`. When asked for `GITHUB_TOKEN`, paste the token.
+3. **Check the URL.** Render shows the service URL (for example `https://hitfit-tribe-admin.onrender.com`). If it's different, update `apiBase` in `admin/config.js` and push.
+4. Open https://spoortifitanalyze.github.io/Hitfit-Tribe/admin/ and log in.
+
+The free Render plan sleeps after 15 minutes without use, so the first login after a break can take about 30 seconds.

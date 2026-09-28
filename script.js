@@ -72,7 +72,9 @@ const renderTestimonials = (testimonials) => {
 // The page ships with default content in the HTML; this swaps in whatever the admin saved.
 const renderHomepage = async () => {
   try {
-    const response = await fetch('/api/content', { cache: 'no-store' });
+    // Relative path so it works both on GitHub Pages (/Hitfit-Tribe/) and the local server.
+    // The timestamp skips GitHub Pages' cache so new saves appear as soon as they're deployed.
+    const response = await fetch(`data/content.json?v=${Date.now()}`, { cache: 'no-store' });
     if (!response.ok) return;
     const content = await response.json();
     renderProfilePhoto(content.profilePhoto);
