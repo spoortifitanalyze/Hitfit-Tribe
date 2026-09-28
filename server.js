@@ -46,7 +46,15 @@ const MAX_ADMINS = 50;
 const SESSION_TTL_MS = 12 * 60 * 60 * 1000;
 const CACHE_TTL_MS = 60 * 1000;
 
-const PUBLIC_FILES = new Set(['/index.html', '/styles.css', '/script.js', '/admin/index.html', '/admin/admin.js', '/admin/config.js']);
+const PUBLIC_FILES = new Set([
+  '/index.html',
+  '/styles.css',
+  '/script.js',
+  '/assets/logo.png',
+  '/admin/index.html',
+  '/admin/admin.js',
+  '/admin/config.js'
+]);
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',

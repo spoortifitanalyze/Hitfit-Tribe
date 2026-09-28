@@ -14,18 +14,19 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
+    <link rel="icon" type="image/png" href="assets/logo.png" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <header class="site-header">
       <div class="container nav-wrap">
-        <div class="brand">
-          <span class="brand-mark">HT</span>
+        <a class="brand" href="#" aria-label="Hitfit Tribe home">
+          <img class="brand-logo" src="assets/logo.png" alt="Hitfit Tribe logo" width="52" height="52" />
           <div>
             <strong>Hitfit</strong>
             <span>Tribe</span>
           </div>
-        </div>
+        </a>
 
         <nav class="main-nav" aria-label="Main navigation">
           <a href="#about">About</a>
@@ -34,7 +35,6 @@
           <a href="#contact">Contact us</a>
         </nav>
 
-        <a class="button button-primary" href="https://endurohub.in" target="_blank" rel="noreferrer">Start Training</a>
       </div>
     </header>
 
@@ -49,8 +49,7 @@
             </p>
 
             <div class="hero-actions">
-              <a class="button button-primary" href="https://endurohub.in" target="_blank" rel="noreferrer">Start Training</a>
-              <a class="button button-secondary" href="#contact">Fill in the form</a>
+              <a class="button button-primary" href="#contact">Fill in the form</a>
             </div>
 
             <p class="social-link-wrap">
@@ -170,19 +169,26 @@
             <h2>Runners trust the process and feel the difference</h2>
           </div>
 
-          <div id="testimonials-content" class="testimonial-grid">
-            <blockquote class="testimonial-card">
-              <p>“I used to dread every run. With Hitendra’s structure and support, I built consistency and finally finished my first 10K feeling strong.”</p>
-              <footer><strong>Priya S.</strong></footer>
-            </blockquote>
-            <blockquote class="testimonial-card">
-              <p>“The plans were realistic, the guidance was clear, and the mindset coaching helped me stay calm under pressure during race week.”</p>
-              <footer><strong>Rohit M.</strong></footer>
-            </blockquote>
-            <blockquote class="testimonial-card">
-              <p>“Hitendra brings a rare mix of discipline and encouragement. His coaching didn’t just improve my pace—it made me more confident.”</p>
-              <footer><strong>Ananya K.</strong></footer>
-            </blockquote>
+          <div class="testimonial-carousel" aria-roledescription="carousel" aria-label="Testimonials">
+            <div id="testimonials-content" class="testimonial-track" aria-live="polite">
+              <blockquote class="testimonial-card is-active">
+                <p>“I used to dread every run. With Hitendra’s structure and support, I built consistency and finally finished my first 10K feeling strong.”</p>
+                <footer><strong>Priya S.</strong></footer>
+              </blockquote>
+              <blockquote class="testimonial-card">
+                <p>“The plans were realistic, the guidance was clear, and the mindset coaching helped me stay calm under pressure during race week.”</p>
+                <footer><strong>Rohit M.</strong></footer>
+              </blockquote>
+              <blockquote class="testimonial-card">
+                <p>“Hitendra brings a rare mix of discipline and encouragement. His coaching didn’t just improve my pace—it made me more confident.”</p>
+                <footer><strong>Ananya K.</strong></footer>
+              </blockquote>
+            </div>
+            <div class="carousel-controls">
+              <button class="carousel-arrow" type="button" data-carousel="prev" aria-label="Previous testimonial">‹</button>
+              <div id="testimonial-dots" class="carousel-dots"></div>
+              <button class="carousel-arrow" type="button" data-carousel="next" aria-label="Next testimonial">›</button>
+            </div>
           </div>
         </div>
       </section>
@@ -198,7 +204,6 @@
             <p class="contact-phone">
               Contact: <a href="tel:+919823116000">9823116000</a>
             </p>
-            <a class="button button-primary" href="https://endurohub.in" target="_blank" rel="noreferrer">Start Training</a>
           </div>
 
           <form id="contact-form" class="contact-form" action="#" method="post">
@@ -211,13 +216,15 @@
               <input type="email" name="email" placeholder="you@example.com" required />
             </label>
             <label>
-              Goal
-              <select name="goal" required>
-                <option value="">Select your goal</option>
-                <option>Beginner running</option>
-                <option>5K / 10K improvement</option>
-                <option>Half marathon training</option>
-                <option>General fitness</option>
+              Coaching program
+              <select id="goal-select" name="goal" required>
+                <option value="">Select a coaching program</option>
+                <option>Beginner Run Foundation</option>
+                <option>5K to 10K Performance</option>
+                <option>Half Marathon Mentorship</option>
+                <option>Full Marathon Training</option>
+                <option>Triathlon Training</option>
+                <option>Not sure yet</option>
               </select>
             </label>
             <label>
