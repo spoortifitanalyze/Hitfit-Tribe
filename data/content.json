@@ -1,0 +1,53 @@
+{
+  "profilePhoto": "",
+  "about": {
+    "heading": "Built for runners who want more than just mileage.",
+    "body": "Hitendra Choudhary, an avid marathoner including a Boston Marathon finisher, brings real race experience and practical endurance coaching to every athlete. At Hitfit Tribe, the goal is simple: help runners become stronger, more resilient, and more confident in their training.\n\nWhether you are just starting your running journey or preparing for your next race, the coaching approach blends endurance training, strength work, mobility, and mindset support so you can stay consistent and keep improving without burning out."
+  },
+  "plans": [
+    {
+      "title": "Beginner Run Foundation",
+      "description": "Build confidence, improve consistency, and learn proper technique without overwhelm through structured weekly plans and a progressive build-up.",
+      "audience": "New runners or anyone returning to running after a long break.",
+      "prerequisites": "Motivation and the ability to spare 1 hour each mrning."
+    },
+    {
+      "title": "5K to 10K Performance",
+      "description": "Improve speed, confidence, and endurance with targeted interval, threshold, and VO2 max sessions plus race-specific planning and recovery strategies.",
+      "audience": "Runners who can already complete a 5K and want to get faster or step up to 10K.",
+      "prerequisites": "Comfortably running 5K, at least 3 runs per week."
+    },
+    {
+      "title": "Half Marathon Mentorship",
+      "description": "Smart training volume, strength work, long-run progression, fueling guidance, and pacing strategy for race day.",
+      "audience": "Runners preparing for their first or next half marathon.",
+      "prerequisites": "Comfortably running 10K."
+    },
+    {
+      "title": "Full Marathon Training",
+      "description": "A structured build-up for race-day readiness, with progressive long runs, workouts, recovery, and weekly check-ins.",
+      "audience": "Experienced runners targeting a full marathon.",
+      "prerequisites": "Recent half marathon finish and a consistent weekly running base."
+    },
+    {
+      "title": "Triathlon Training",
+      "description": "Balanced swim, bike, and run progression with brick sessions and a plan built around your recovery capacity.",
+      "audience": "Athletes preparing for sprint, Olympic, or longer triathlons.",
+      "prerequisites": "Able to swim continuously and ride a bike comfortably."
+    }
+  ],
+  "testimonials": [
+    {
+      "name": "Ganesh Reddy",
+      "comment": "I have been training with Hitendra sir for the last one & half years and have seen tremendous improvement in myself, a improvement of > 1 hour in the FM timings in a one year time.\nAll credit to his structured coaching ways. Hitendra sir is himself an athlete and very thorough professional.\nDhoop, Barish whatever it is , his training will never take a break.\nHis training plans caters to Amateur's, recreational runners & elite runners as well.\nAll you need to do is commit to his program & you will see major changes in yourself as a runner. Definitely the best in the town"
+    },
+    {
+      "name": "Anagha.G",
+      "comment": "I've been training with Hitendra Sir for a number of months now & it is one of the best decisions I've made for myself! I feel so much more confident, clothes fit better & best of all I really enjoy it!\nHis training sessions are intense, fun, but always being careful to respect your injuries and stresses. Never pushes you too hard, but just to the brink as he takes the time to understand your capabilities. Even with having a very busy work life, I have been able to maintain a fairly consistent training schedule , all thanks to the super motivation and support by Sir !"
+    },
+    {
+      "name": "Amit Inamdar",
+      "comment": "I have been training under the guidance of Hitendra sir for the last 4.5 years - since August 2020. I initially joined as a wannabe runner to improve my fitness and health during COVID. He has transformed me from an injury prone novice runner to successfully completing 5 marathons, each one better than the previous one. Add to that a >50 half marathons and countless miles in training.\n\nHis combination of systematic and customized training is truly unique, equally suitable for novice runners, mid-level runners as well as elites. He is the best thing that happened to me to improve my fitness and running continuously.\n\nHitendra sir himself is a very accomplished runner, routinely bagging numerous podiums in various events. He goes out of the way to give the best atmosphere for his proteges, that goes beyond training - be it getting good deals on shoes, planning excursions with families, bird watching guidance. The list is very long! Immensely grateful!"
+    }
+  ]
+}
