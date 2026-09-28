@@ -556,6 +556,7 @@ p {
 
 .admin-login input,
 .admin-editor input,
+.admin-add-user input,
 .admin-editor textarea,
 .admin-editor [contenteditable="true"] {
   width: 100%;
@@ -691,6 +692,48 @@ p {
 .button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.admin-users {
+  margin-top: 28px;
+}
+
+.admin-user-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.admin-user-list li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  overflow-wrap: anywhere;
+}
+
+.admin-owner-tag {
+  color: var(--primary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.admin-add-user {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.admin-add-user input {
+  flex: 1 1 240px;
 }
 
 @media (max-width: 900px) {

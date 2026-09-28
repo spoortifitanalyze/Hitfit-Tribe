@@ -24,11 +24,7 @@
         <form id="admin-login" class="admin-login">
           <label>
             Admin email
-            <input id="admin-email" type="email" autocomplete="username" required />
-          </label>
-          <label>
-            Password
-            <input id="admin-password" type="password" autocomplete="current-password" required />
+            <input id="admin-email" type="email" autocomplete="email" required />
           </label>
           <button class="button button-primary" type="submit">Log in</button>
           <div id="login-status" class="admin-status" aria-live="polite"></div>
@@ -86,6 +82,19 @@
             <button id="logout-button" class="button button-secondary" type="button">Log out</button>
           </div>
           <div id="save-status" class="admin-status" aria-live="polite"></div>
+        </form>
+
+        <form id="admins-form" class="admin-editor admin-users" hidden>
+          <section class="admin-section">
+            <h2>Admin users</h2>
+            <p class="admin-hint">These emails can log in to this admin page. Owners can’t be removed. Changes apply immediately.</p>
+            <ul id="admins-list" class="admin-user-list"></ul>
+            <div class="admin-add-user">
+              <input id="new-admin-email" type="email" placeholder="name@example.com" aria-label="New admin email" required />
+              <button class="button button-secondary button-small" type="submit">+ Add admin</button>
+            </div>
+            <div id="admins-status" class="admin-status" aria-live="polite"></div>
+          </section>
         </form>
       </div>
     </div>
