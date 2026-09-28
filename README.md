@@ -15,24 +15,21 @@ Website for running coach Hitendra Choudhary, with an admin page for editing the
 - `server.js` – Node server that hosts the site and the admin API (no dependencies)
 - `data/default-content.json` – starting content, used until the admin saves for the first time
 - `data/content.json` – content saved from the admin page (created automatically, not committed)
+- `data/admins.json` – admin emails added by owners (created automatically, not committed)
 - `uploads/` – uploaded profile photos (not committed)
 
 ## Run locally
-Requires Node.js 18 or newer. Set an admin password, then start the server:
+Requires Node.js 18 or newer.
 
 ```bash
-# macOS / Linux
-ADMIN_PASSWORD="choose-a-strong-password" npm start
-
-# Windows PowerShell
-$env:ADMIN_PASSWORD="choose-a-strong-password"; npm start
+npm start
 ```
 
 - Website: http://localhost:8000
 - Admin page: http://localhost:8000/admin
 
 ## Admin page
-Log in with an approved email and the `ADMIN_PASSWORD`. From there you can edit:
+Log in by entering an approved admin email. There is no password. From there you can edit:
 
 - **Profile photo** – uploaded image shown in the hero section
 - **About** – heading and details (blank line between paragraphs)
@@ -41,11 +38,17 @@ Log in with an approved email and the `ADMIN_PASSWORD`. From there you can edit:
 
 Click **Save changes** and the website shows the new content on the next page load.
 
+### Admin users
+- **Owners** (`bheed.spoorti@gmail.com`, `hitendra2309@gmail.com` by default) can always log in, and they are the only ones who see the **Admin users** section.
+- Owners can add or remove other admin emails there. Added admins can edit the site content but can't manage admin users.
+- Removing an admin takes effect immediately, including anyone already logged in with that email.
+
+> **Security note:** login checks only that the email is on the list; it doesn't verify that the person owns the address. Anyone who knows an admin email can log in, so keep the `/admin` link private.
+
 ## Configuration
 | Variable | Default | Purpose |
 | --- | --- | --- |
-| `ADMIN_PASSWORD` | _(none – login disabled)_ | Password for the admin page |
-| `ADMIN_EMAILS` | `bheed.spoorti@gmail.com,hitendra2309@gmail.com` | Comma-separated list of emails allowed to log in |
+| `OWNER_EMAILS` | `bheed.spoorti@gmail.com,hitendra2309@gmail.com` | Comma-separated owner emails (can log in and manage admin users) |
 | `PORT` | `8000` | Port the server listens on |
 
 ## Hosting

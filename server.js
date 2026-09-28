@@ -7,14 +7,15 @@ const path = require('path');
 const crypto = require('crypto');
 
 const PORT = Number(process.env.PORT) || 8000;
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
-const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || 'bheed.spoorti@gmail.com,hitendra2309@gmail.com')
+// Owners can always log in and are the only ones who can add or remove other admins.
+const OWNER_EMAILS = (process.env.OWNER_EMAILS || 'bheed.spoorti@gmail.com,hitendra2309@gmail.com')
   .split(',')
   .map((email) => email.trim().toLowerCase())
   .filter(Boolean);
 
 const ROOT = __dirname;
 const DATA_DIR = path.join(ROOT, 'data');
+const ADMINS_FILE = path.join(DATA_DIR, 'admins.json');
 const CONTENT_FILE = path.join(DATA_DIR, 'content.json');
 const DEFAULT_CONTENT_FILE = path.join(DATA_DIR, 'default-content.json');
 const UPLOADS_DIR = path.join(ROOT, 'uploads');
@@ -23,6 +24,7 @@ const MAX_BODY_BYTES = 8 * 1024 * 1024;
 const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
 const MAX_PLANS = 12;
 const MAX_TESTIMONIALS = 3;
+const MAX_ADMINS = 50;
 const SESSION_TTL_MS = 12 * 60 * 60 * 1000;
 
 const PUBLIC_FILES = new Set(['/index.html', '/styles.css', '/script.js', '/admin/index.html', '/admin/admin.js']);
@@ -50,11 +52,28 @@ const readContent = () => {
   return JSON.parse(fs.readFileSync(file, 'utf8'));
 };
 
-const writeContent = (content) => {
-  const tempFile = `${CONTENT_FILE}.tmp`;
-  fs.writeFileSync(tempFile, JSON.stringify(content, null, 2));
-  fs.renameSync(tempFile, CONTENT_FILE);
+const writeJsonFile = (file, data) => {
+  const tempFile = `${file}.tmp`;
+  fs.writeFileSync(tempFile, JSON.stringify(data, null, 2));
+  fs.renameSync(tempFile, file);
 };
+
+const writeContent = (content) => writeJsonFile(CONTENT_FILE, content);
+
+// ---------- admin list ----------
+
+const readAddedAdmins = () => (fs.existsSync(ADMINS_FILE) ? JSON.parse(fs.readFileSync(ADMINS_FILE, 'utf8')) : []);
+
+const isOwner = (email) => OWNER_EMAILS.includes(email);
+const isAdmin = (email) => isOwner(email) || readAddedAdmins().includes(email);
+
+const normalizeEmail = (value) => String(value || '').trim().toLowerCase();
+const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= 254;
+
+const listAdmins = () => [
+  ...OWNER_EMAILS.map((email) => ({ email, owner: true })),
+  ...readAddedAdmins().map((email) => ({ email, owner: false }))
+];
 
 const badRequest = (message, status = 400) => Object.assign(new Error(message), { status });
 
@@ -100,12 +119,6 @@ const validateContent = (input) => {
 
 // ---------- auth ----------
 
-const safeEqual = (a, b) => {
-  const hashA = crypto.createHash('sha256').update(String(a)).digest();
-  const hashB = crypto.createHash('sha256').update(String(b)).digest();
-  return crypto.timingSafeEqual(hashA, hashB);
-};
-
 const createSession = (email) => {
   const token = crypto.randomBytes(32).toString('hex');
   sessions.set(token, { email, expiresAt: Date.now() + SESSION_TTL_MS });
@@ -116,7 +129,8 @@ const getSession = (req) => {
   const token = (req.headers.authorization || '').replace(/^Bearer\s+/i, '');
   const session = token && sessions.get(token);
   if (!session) return null;
-  if (session.expiresAt < Date.now()) {
+  // A removed admin loses access immediately, even mid-session.
+  if (session.expiresAt < Date.now() || !isAdmin(session.email)) {
     sessions.delete(token);
     return null;
   }
@@ -196,17 +210,12 @@ const handleApi = async (req, res, pathname) => {
   }
 
   if (pathname === '/api/login' && req.method === 'POST') {
-    if (!ADMIN_PASSWORD) {
-      sendJson(res, 503, { error: 'Admin login is disabled: ADMIN_PASSWORD is not set on the server.' });
+    const email = normalizeEmail((await readJsonBody(req)).email);
+    if (!isAdmin(email)) {
+      sendJson(res, 401, { error: 'Access denied. This email is not an approved admin.' });
       return;
     }
-    const { email, password } = await readJsonBody(req);
-    const normalizedEmail = String(email || '').trim().toLowerCase();
-    if (!ADMIN_EMAILS.includes(normalizedEmail) || !safeEqual(password || '', ADMIN_PASSWORD)) {
-      sendJson(res, 401, { error: 'Incorrect email or password.' });
-      return;
-    }
-    sendJson(res, 200, { token: createSession(normalizedEmail), email: normalizedEmail });
+    sendJson(res, 200, { token: createSession(email), email, owner: isOwner(email) });
     return;
   }
 
@@ -247,6 +256,42 @@ const handleApi = async (req, res, pathname) => {
     return;
   }
 
+  if (pathname === '/api/me' && req.method === 'GET') {
+    sendJson(res, 200, { email: session.email, owner: isOwner(session.email) });
+    return;
+  }
+
+  if (pathname === '/api/admins') {
+    if (!isOwner(session.email)) {
+      sendJson(res, 403, { error: 'Only owners can manage admin users.' });
+      return;
+    }
+
+    if (req.method === 'GET') {
+      sendJson(res, 200, listAdmins());
+      return;
+    }
+
+    if (req.method === 'POST' || req.method === 'DELETE') {
+      const email = normalizeEmail((await readJsonBody(req)).email);
+      const added = readAddedAdmins();
+
+      if (req.method === 'POST') {
+        if (!isValidEmail(email)) throw badRequest('Please enter a valid email address.');
+        if (isAdmin(email)) throw badRequest('This email is already an admin.');
+        if (added.length >= MAX_ADMINS) throw badRequest(`You can add up to ${MAX_ADMINS} admins.`);
+        writeJsonFile(ADMINS_FILE, [...added, email]);
+      } else {
+        if (isOwner(email)) throw badRequest('Owners cannot be removed.');
+        if (!added.includes(email)) throw badRequest('This email is not an admin.');
+        writeJsonFile(ADMINS_FILE, added.filter((item) => item !== email));
+      }
+
+      sendJson(res, 200, listAdmins());
+      return;
+    }
+  }
+
   sendJson(res, 404, { error: 'Not found.' });
 };
 
@@ -269,5 +314,4 @@ const server = http.createServer(async (req, res) => {
 server.listen(PORT, () => {
   console.log(`Hitfit Tribe running at http://localhost:${PORT}`);
   console.log(`Admin page: http://localhost:${PORT}/admin`);
-  if (!ADMIN_PASSWORD) console.warn('Warning: ADMIN_PASSWORD is not set, so admin login is disabled.');
 });

@@ -12,6 +12,10 @@ const plansList = document.getElementById('plans-list');
 const testimonialsList = document.getElementById('testimonials-list');
 const addPlanButton = document.getElementById('add-plan');
 const addTestimonialButton = document.getElementById('add-testimonial');
+const adminsForm = document.getElementById('admins-form');
+const adminsList = document.getElementById('admins-list');
+const adminsStatus = document.getElementById('admins-status');
+const newAdminInput = document.getElementById('new-admin-email');
 
 let profilePhoto = '';
 
@@ -149,11 +153,71 @@ const fillEditor = (content) => {
   refreshTestimonials();
 };
 
+// ---------- admin users (owners only) ----------
+
+const renderAdmins = (admins) => {
+  adminsList.replaceChildren(
+    ...admins.map(({ email, owner }) => {
+      const item = document.createElement('li');
+      const label = document.createElement('span');
+      label.textContent = email;
+      item.append(label);
+
+      if (owner) {
+        const tag = document.createElement('span');
+        tag.className = 'admin-owner-tag';
+        tag.textContent = 'Owner';
+        item.append(tag);
+      } else {
+        const removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.className = 'button button-secondary button-small';
+        removeButton.textContent = 'Remove';
+        removeButton.addEventListener('click', () => updateAdmins('DELETE', email));
+        item.append(removeButton);
+      }
+      return item;
+    })
+  );
+};
+
+const updateAdmins = async (method, email) => {
+  try {
+    renderAdmins(await api('/api/admins', { method, body: JSON.stringify({ email }) }));
+    setStatus(adminsStatus, method === 'POST' ? `${email} can now log in.` : `${email} was removed.`);
+    return true;
+  } catch (error) {
+    setStatus(adminsStatus, error.message, true);
+    return false;
+  }
+};
+
+adminsForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const email = newAdminInput.value.trim().toLowerCase();
+  if (await updateAdmins('POST', email)) newAdminInput.value = '';
+});
+
+const loadAdmins = async () => {
+  try {
+    renderAdmins(await api('/api/admins'));
+    setStatus(adminsStatus, '');
+  } catch (error) {
+    setStatus(adminsStatus, error.message, true);
+  }
+};
+
+// ---------- screens ----------
+
 const showEditor = async () => {
-  loginForm.hidden = true;
-  editorForm.hidden = false;
   setStatus(saveStatus, 'Loading…');
   try {
+    // Confirms the saved session is still valid before showing the editor.
+    const me = await api('/api/me');
+    loginForm.hidden = true;
+    editorForm.hidden = false;
+    adminsForm.hidden = !me.owner;
+    if (me.owner) loadAdmins();
     fillEditor(await api('/api/content'));
     setStatus(saveStatus, '');
   } catch (error) {
@@ -164,6 +228,7 @@ const showEditor = async () => {
 function showLogin(message = '') {
   setToken('');
   editorForm.hidden = true;
+  adminsForm.hidden = true;
   loginForm.hidden = false;
   setStatus(loginStatus, message, Boolean(message));
 }
@@ -174,13 +239,9 @@ loginForm.addEventListener('submit', async (event) => {
   try {
     const { token } = await api('/api/login', {
       method: 'POST',
-      body: JSON.stringify({
-        email: document.getElementById('admin-email').value,
-        password: document.getElementById('admin-password').value
-      })
+      body: JSON.stringify({ email: document.getElementById('admin-email').value })
     });
     setToken(token);
-    document.getElementById('admin-password').value = '';
     setStatus(loginStatus, '');
     showEditor();
   } catch (error) {
