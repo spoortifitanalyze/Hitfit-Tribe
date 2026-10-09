@@ -51,6 +51,18 @@
           </section>
 
           <section class="admin-section">
+            <h2>Photo gallery</h2>
+            <p class="admin-hint">Up to 4 photos, shown as a slideshow on the website in this order. If there are none, the section is hidden. JPG, PNG, or WebP, up to 5 MB each.</p>
+            <ul id="gallery-list" class="admin-gallery"></ul>
+            <div class="admin-actions">
+              <label id="gallery-add" class="button button-secondary button-small">
+                + Add photo
+                <input id="gallery-input" type="file" accept="image/jpeg,image/png,image/webp" hidden />
+              </label>
+            </div>
+          </section>
+
+          <section class="admin-section">
             <h2>About</h2>
             <label>
               Heading

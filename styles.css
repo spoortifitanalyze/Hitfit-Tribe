@@ -282,15 +282,33 @@ p {
   box-shadow: 0 12px 30px rgba(224, 163, 107, 0.16);
 }
 
-.coach-portrait.has-photo {
-  overflow: hidden;
+/* With a photo, the portrait fills the whole frame. */
+.coach-photo-card.has-photo {
+  aspect-ratio: 4 / 5;
+  min-height: 0;
+}
+
+.coach-photo-card.has-photo .coach-portrait {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
+  border-radius: 0;
   background: none;
+  box-shadow: none;
+  overflow: hidden;
+}
+
+.coach-photo-card.has-photo .coach-badge {
+  z-index: 1;
 }
 
 .coach-portrait img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center 30%;
 }
 
 .coach-details {
@@ -391,35 +409,69 @@ p {
   max-width: 700px;
 }
 
-.testimonial-carousel {
+.carousel {
   max-width: 760px;
   margin: 30px auto 0;
 }
 
-/* All cards share one grid cell, so the track is as tall as the longest testimonial and never jumps. */
-.testimonial-track {
+/* All slides share one grid cell, so the track is as tall as the tallest slide and never jumps. */
+.carousel-track {
   display: grid;
 }
 
-.testimonial-card {
+.carousel-track > * {
   grid-area: 1 / 1;
-  padding: 36px 34px;
   margin: 0;
-  text-align: center;
   opacity: 0;
   visibility: hidden;
   transform: translateX(24px);
   transition: opacity 0.6s ease, transform 0.6s ease, visibility 0.6s;
 }
 
-.testimonial-card.is-active {
+.carousel-track > .is-active {
   opacity: 1;
   visibility: visible;
   transform: none;
 }
 
-.testimonial-card.is-leaving {
+.carousel-track > .is-leaving {
   transform: translateX(-24px);
+}
+
+.testimonial-card {
+  padding: 36px 34px;
+  text-align: center;
+}
+
+.gallery-carousel {
+  max-width: 900px;
+}
+
+/* Photos are letterboxed rather than cropped, so portrait and landscape shots both show in full. */
+.gallery-slide {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  border-radius: 22px;
+  overflow: hidden;
+  background: var(--bg-deep);
+  border: 1px solid var(--hairline);
+  box-shadow: var(--shadow);
+}
+
+.gallery-slide img {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.gallery-slide .gallery-backdrop {
+  position: absolute;
+  inset: 0;
+  object-fit: cover;
+  filter: blur(28px) brightness(0.55);
+  transform: scale(1.15);
 }
 
 .testimonial-card p {
@@ -474,7 +526,7 @@ p {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .testimonial-card {
+  .carousel-track > * {
     transition: none;
   }
 }
@@ -735,10 +787,11 @@ p {
   gap: 20px;
 }
 
+/* Same 4:5 frame as the website, so the preview shows how the photo will be cropped. */
 .admin-photo-preview {
   width: 120px;
-  height: 120px;
-  border-radius: 50%;
+  height: 150px;
+  border-radius: 14px;
   display: grid;
   place-items: center;
   overflow: hidden;
@@ -752,6 +805,39 @@ p {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center 30%;
+}
+
+.admin-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.admin-gallery:empty {
+  display: none;
+}
+
+.admin-gallery li {
+  display: grid;
+  gap: 8px;
+}
+
+.admin-gallery img {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: contain;
+  border-radius: 12px;
+  border: 1px solid var(--hairline);
+  background: var(--bg-deep);
+}
+
+.button.is-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .admin-item {

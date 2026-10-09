@@ -30,6 +30,7 @@
 
         <nav class="main-nav" aria-label="Main navigation">
           <a href="#about">About</a>
+          <a id="gallery-nav-link" href="#gallery" hidden>Gallery</a>
           <a href="#programs">Coaching Programs</a>
           <a href="#testimonials">Testimonials</a>
           <a href="#contact">Contact us</a>
@@ -87,6 +88,24 @@
           <div id="about-content">
             <p>Hitendra Choudhary, an avid marathoner including a Boston Marathon finisher, brings real race experience and practical endurance coaching to every athlete. At Hitfit Tribe, the goal is simple: help runners become stronger, more resilient, and more confident in their training.</p>
             <p>Whether you are just starting your running journey or preparing for your next race, the coaching approach blends endurance training, strength work, mobility, and mindset support so you can stay consistent and keep improving without burning out.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="gallery" class="section gallery" hidden>
+        <div class="container">
+          <div class="section-heading">
+            <p class="section-tag">Gallery</p>
+            <h2>Moments from the road</h2>
+          </div>
+
+          <div class="carousel gallery-carousel" aria-roledescription="carousel" aria-label="Photo gallery">
+            <div id="gallery-content" class="carousel-track"></div>
+            <div class="carousel-controls">
+              <button class="carousel-arrow" type="button" data-carousel="prev" aria-label="Previous photo">‹</button>
+              <div class="carousel-dots"></div>
+              <button class="carousel-arrow" type="button" data-carousel="next" aria-label="Next photo">›</button>
+            </div>
           </div>
         </div>
       </section>
@@ -169,8 +188,8 @@
             <h2>Runners trust the process and feel the difference</h2>
           </div>
 
-          <div class="testimonial-carousel" aria-roledescription="carousel" aria-label="Testimonials">
-            <div id="testimonials-content" class="testimonial-track" aria-live="polite">
+          <div class="carousel testimonial-carousel" aria-roledescription="carousel" aria-label="Testimonials">
+            <div id="testimonials-content" class="carousel-track" aria-live="polite">
               <blockquote class="testimonial-card is-active">
                 <p>“I used to dread every run. With Hitendra’s structure and support, I built consistency and finally finished my first 10K feeling strong.”</p>
                 <footer><strong>Priya S.</strong></footer>
@@ -186,7 +205,7 @@
             </div>
             <div class="carousel-controls">
               <button class="carousel-arrow" type="button" data-carousel="prev" aria-label="Previous testimonial">‹</button>
-              <div id="testimonial-dots" class="carousel-dots"></div>
+              <div class="carousel-dots"></div>
               <button class="carousel-arrow" type="button" data-carousel="next" aria-label="Next testimonial">›</button>
             </div>
           </div>
