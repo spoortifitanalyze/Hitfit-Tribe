@@ -27,7 +27,34 @@ const renderProfilePhoto = (photoUrl) => {
   image.src = photoUrl;
   image.alt = 'Coach Hitendra Choudhary';
   portrait.replaceChildren(image);
-  portrait.classList.add('has-photo');
+  // With a photo, the portrait fills the whole frame instead of sitting in it as a small circle.
+  portrait.closest('.coach-photo-card')?.classList.add('has-photo');
+};
+
+const renderGallery = (photos = []) => {
+  const section = document.getElementById('gallery');
+  const container = document.getElementById('gallery-content');
+  if (!section || !container) return;
+  section.hidden = photos.length === 0;
+  const navLink = document.getElementById('gallery-nav-link');
+  if (navLink) navLink.hidden = photos.length === 0;
+  container.replaceChildren(
+    ...photos.map((photoUrl, index) => {
+      const slide = createElement('figure', index === 0 ? 'gallery-slide is-active' : 'gallery-slide');
+      const image = createElement('img');
+      image.src = photoUrl;
+      image.alt = `Hitfit Tribe photo ${index + 1} of ${photos.length}`;
+      image.loading = index === 0 ? 'eager' : 'lazy';
+      // A blurred copy of the photo fills the empty bars beside portrait shots.
+      const backdrop = createElement('img', 'gallery-backdrop');
+      backdrop.src = photoUrl;
+      backdrop.alt = '';
+      backdrop.loading = image.loading;
+      slide.append(backdrop, image);
+      return slide;
+    })
+  );
+  initCarousel(section.querySelector('.carousel'));
 };
 
 const renderPlans = (plans) => {
@@ -67,7 +94,7 @@ const renderTestimonials = (testimonials) => {
       return card;
     })
   );
-  initCarousel();
+  initCarousel(section?.querySelector('.carousel'));
 };
 
 const renderGoalOptions = (plans) => {
@@ -84,18 +111,18 @@ const renderGoalOptions = (plans) => {
   if ([...select.options].some((option) => option.value === selected)) select.value = selected;
 };
 
-// ---------- testimonial carousel ----------
+// ---------- carousels (testimonials, gallery) ----------
 
 const CAROUSEL_INTERVAL_MS = 6000;
-let carouselTimer = null;
+const carouselTimers = new WeakMap();
 
-const initCarousel = () => {
-  const carousel = document.querySelector('.testimonial-carousel');
-  const cards = [...document.querySelectorAll('#testimonials-content .testimonial-card')];
-  const dots = document.getElementById('testimonial-dots');
-  if (!carousel || !dots) return;
+const initCarousel = (carousel) => {
+  if (!carousel) return;
+  const cards = [...carousel.querySelector('.carousel-track').children];
+  const dots = carousel.querySelector('.carousel-dots');
+  const itemLabel = carousel.querySelector('[data-carousel="next"]').getAttribute('aria-label').replace(/^Next /, '');
 
-  clearInterval(carouselTimer);
+  clearInterval(carouselTimers.get(carousel));
   const controls = carousel.querySelector('.carousel-controls');
   controls.hidden = cards.length < 2;
   if (cards.length < 2) return;
@@ -117,7 +144,7 @@ const initCarousel = () => {
     ...cards.map((_, i) => {
       const dot = createElement('button');
       dot.type = 'button';
-      dot.setAttribute('aria-label', `Show testimonial ${i + 1}`);
+      dot.setAttribute('aria-label', `Show ${itemLabel} ${i + 1}`);
       dot.setAttribute('aria-current', String(i === current));
       dot.addEventListener('click', () => show(i));
       return dot;
@@ -129,11 +156,11 @@ const initCarousel = () => {
 
   // Auto-rotate, pausing while the visitor hovers or tabs into it; skipped if they prefer reduced motion.
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const stop = () => clearInterval(carouselTimers.get(carousel));
   const start = () => {
-    clearInterval(carouselTimer);
-    carouselTimer = setInterval(() => show(current + 1), CAROUSEL_INTERVAL_MS);
+    stop();
+    carouselTimers.set(carousel, setInterval(() => show(current + 1), CAROUSEL_INTERVAL_MS));
   };
-  const stop = () => clearInterval(carouselTimer);
   carousel.onmouseenter = stop;
   carousel.onmouseleave = start;
   carousel.onfocusin = stop;
@@ -150,6 +177,7 @@ const renderHomepage = async () => {
     if (!response.ok) return;
     const content = await response.json();
     renderProfilePhoto(content.profilePhoto);
+    renderGallery(content.gallery);
     renderAbout(content.about);
     renderPlans(content.plans);
     renderTestimonials(content.testimonials);
@@ -187,7 +215,7 @@ const saveContactFormResponse = async (payload) => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  initCarousel();
+  initCarousel(document.querySelector('.testimonial-carousel'));
   renderHomepage();
 
   const contactForm = document.getElementById('contact-form');

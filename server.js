@@ -42,6 +42,7 @@ const MAX_BODY_BYTES = 8 * 1024 * 1024;
 const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
 const MAX_PLANS = 12;
 const MAX_TESTIMONIALS = 3;
+const MAX_GALLERY_PHOTOS = 4;
 const MAX_ADMINS = 50;
 const SESSION_TTL_MS = 12 * 60 * 60 * 1000;
 const CACHE_TTL_MS = 60 * 1000;
@@ -180,15 +181,23 @@ const validateContent = (input) => {
 
   const plans = Array.isArray(input.plans) ? input.plans : [];
   const testimonials = Array.isArray(input.testimonials) ? input.testimonials : [];
+  const gallery = Array.isArray(input.gallery) ? input.gallery : [];
 
   if (plans.length > MAX_PLANS) throw badRequest(`You can add up to ${MAX_PLANS} training plans.`);
   if (testimonials.length > MAX_TESTIMONIALS) throw badRequest(`You can add up to ${MAX_TESTIMONIALS} testimonials.`);
+  if (gallery.length > MAX_GALLERY_PHOTOS) throw badRequest(`You can add up to ${MAX_GALLERY_PHOTOS} gallery photos.`);
+
+  const isPhotoPath = (value) => /^uploads\/[\w.-]+$/.test(value);
 
   const profilePhoto = cleanText(input.profilePhoto, 200);
-  if (profilePhoto && !/^uploads\/[\w.-]+$/.test(profilePhoto)) throw badRequest('Invalid profile photo path.');
+  if (profilePhoto && !isPhotoPath(profilePhoto)) throw badRequest('Invalid profile photo path.');
+
+  const galleryPhotos = gallery.map((photo) => cleanText(photo, 200));
+  if (!galleryPhotos.every(isPhotoPath)) throw badRequest('Invalid gallery photo path.');
 
   const content = {
     profilePhoto,
+    gallery: galleryPhotos,
     about: {
       heading: cleanText(input.about?.heading, 200),
       body: cleanText(input.about?.body, 5000)
@@ -366,14 +375,15 @@ const handleApi = async (req, res, pathname) => {
   }
 
   if (pathname === '/api/photo' && req.method === 'POST') {
-    const { dataUrl } = await readJsonBody(req);
+    const { dataUrl, kind } = await readJsonBody(req);
     const match = /^data:(image\/(?:jpeg|png|webp));base64,(.+)$/.exec(String(dataUrl || ''));
     if (!match) throw badRequest('Please upload a JPG, PNG, or WebP image.');
     const buffer = Buffer.from(match[2], 'base64');
     if (buffer.length > MAX_PHOTO_BYTES) throw badRequest('Photo must be 5 MB or smaller.', 413);
 
-    const photoPath = `uploads/profile-${Date.now()}${PHOTO_TYPES[match[1]]}`;
-    await storage.writeFile(photoPath, buffer, `Upload profile photo (by ${session.email})`);
+    const prefix = kind === 'gallery' ? 'gallery' : 'profile';
+    const photoPath = `uploads/${prefix}-${Date.now()}${PHOTO_TYPES[match[1]]}`;
+    await storage.writeFile(photoPath, buffer, `Upload ${prefix} photo (by ${session.email})`);
     sendJson(res, 200, { path: photoPath });
     return;
   }

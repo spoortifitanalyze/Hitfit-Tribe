@@ -1,5 +1,7 @@
 const MAX_PLANS = 12;
 const MAX_TESTIMONIALS = 3;
+const MAX_GALLERY_PHOTOS = 4;
+const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
 const TOKEN_KEY = 'hitfit-tribe-admin-token';
 
 // When the admin page is served by the local Node server, the API is on the same origin.
@@ -14,6 +16,9 @@ const editorForm = document.getElementById('admin-editor');
 const saveStatus = document.getElementById('save-status');
 const photoPreview = document.getElementById('photo-preview');
 const photoInput = document.getElementById('photo-input');
+const galleryList = document.getElementById('gallery-list');
+const galleryInput = document.getElementById('gallery-input');
+const galleryAddButton = document.getElementById('gallery-add');
 const plansList = document.getElementById('plans-list');
 const testimonialsList = document.getElementById('testimonials-list');
 const addPlanButton = document.getElementById('add-plan');
@@ -26,6 +31,8 @@ const newAdminInput = document.getElementById('new-admin-email');
 let profilePhoto = '';
 // Newly uploaded photos aren't on GitHub Pages until the next deploy, so preview them from the file.
 let photoPreviewSrc = '';
+// Each gallery photo: { path, previewSrc } — previewSrc is set only for photos uploaded this session.
+let galleryPhotos = [];
 
 const getToken = () => {
   try {
@@ -123,26 +130,34 @@ const readFileAsDataUrl = (file) =>
     reader.readAsDataURL(file);
   });
 
-photoInput.addEventListener('change', async () => {
-  const file = photoInput.files[0];
-  photoInput.value = '';
-  if (!file) return;
-  if (file.size > 5 * 1024 * 1024) {
+// Uploads the file chosen in `input` and returns { path, dataUrl }, or null if nothing was uploaded.
+const uploadPhoto = async (input, kind) => {
+  const file = input.files[0];
+  input.value = '';
+  if (!file) return null;
+  if (file.size > MAX_PHOTO_BYTES) {
     setStatus(saveStatus, 'Photo must be 5 MB or smaller.', true);
-    return;
+    return null;
   }
 
   try {
     setStatus(saveStatus, 'Uploading photo…');
     const dataUrl = await readFileAsDataUrl(file);
-    const { path } = await api('/api/photo', { method: 'POST', body: JSON.stringify({ dataUrl }) });
-    profilePhoto = path;
-    photoPreviewSrc = dataUrl;
-    renderPhotoPreview();
+    const { path } = await api('/api/photo', { method: 'POST', body: JSON.stringify({ dataUrl, kind }) });
     setStatus(saveStatus, 'Photo uploaded. Click “Save changes” to publish it.');
+    return { path, dataUrl };
   } catch (error) {
     setStatus(saveStatus, error.message, true);
+    return null;
   }
+};
+
+photoInput.addEventListener('change', async () => {
+  const uploaded = await uploadPhoto(photoInput, 'profile');
+  if (!uploaded) return;
+  profilePhoto = uploaded.path;
+  photoPreviewSrc = uploaded.dataUrl;
+  renderPhotoPreview();
 });
 
 document.getElementById('photo-remove').addEventListener('click', () => {
@@ -152,12 +167,50 @@ document.getElementById('photo-remove').addEventListener('click', () => {
   setStatus(saveStatus, 'Photo removed. Click “Save changes” to publish.');
 });
 
+// ---------- gallery ----------
+
+const renderGallery = () => {
+  galleryList.replaceChildren(
+    ...galleryPhotos.map((photo, index) => {
+      const item = document.createElement('li');
+      const image = document.createElement('img');
+      image.src = photo.previewSrc || new URL(photo.path, SITE_ROOT).href;
+      image.alt = `Gallery photo ${index + 1}`;
+
+      const removeButton = document.createElement('button');
+      removeButton.type = 'button';
+      removeButton.className = 'button button-secondary button-small';
+      removeButton.textContent = 'Remove';
+      removeButton.addEventListener('click', () => {
+        galleryPhotos.splice(index, 1);
+        renderGallery();
+        setStatus(saveStatus, 'Photo removed. Click “Save changes” to publish.');
+      });
+
+      item.append(image, removeButton);
+      return item;
+    })
+  );
+  const isFull = galleryPhotos.length >= MAX_GALLERY_PHOTOS;
+  galleryAddButton.classList.toggle('is-disabled', isFull);
+  galleryInput.disabled = isFull;
+};
+
+galleryInput.addEventListener('change', async () => {
+  const uploaded = await uploadPhoto(galleryInput, 'gallery');
+  if (!uploaded || galleryPhotos.length >= MAX_GALLERY_PHOTOS) return;
+  galleryPhotos.push({ path: uploaded.path, previewSrc: uploaded.dataUrl });
+  renderGallery();
+});
+
 // ---------- load / save ----------
 
 const fillEditor = (content) => {
   profilePhoto = content.profilePhoto || '';
   photoPreviewSrc = '';
   renderPhotoPreview();
+  galleryPhotos = (content.gallery || []).map((path) => ({ path, previewSrc: '' }));
+  renderGallery();
   document.getElementById('about-heading').value = content.about?.heading || '';
   document.getElementById('about-body').value = content.about?.body || '';
   plansList.replaceChildren();
@@ -272,6 +325,7 @@ editorForm.addEventListener('submit', async (event) => {
       method: 'PUT',
       body: JSON.stringify({
         profilePhoto,
+        gallery: galleryPhotos.map((photo) => photo.path),
         about: {
           heading: document.getElementById('about-heading').value,
           body: document.getElementById('about-body').value
