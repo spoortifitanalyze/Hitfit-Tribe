@@ -67,6 +67,12 @@ Because the server commits to `main`, run `git pull` before making code changes 
 | `GITHUB_BRANCH` | `main` | Branch GitHub Pages deploys from |
 | `ALLOWED_ORIGINS` | `https://spoortifitanalyze.github.io` | Sites allowed to call the admin API |
 | `OWNER_EMAILS` | `bheed.spoorti@gmail.com,hitendra2309@gmail.com` | Comma-separated owner emails (can log in and manage admin users) |
+| `CONTACT_TO_EMAIL` | `hitendra2309@gmail.com` | Email address that receives contact-form submissions |
+| `SMTP_HOST` | `smtp.gmail.com` | SMTP server used to deliver form emails |
+| `SMTP_PORT` | `587` | SMTP port for Gmail TLS |
+| `SMTP_USER` | `hitendra2309@gmail.com` | Gmail address used to send the contact email |
+| `SMTP_PASS` | _(none – must be set)_ | Gmail app password for the sending account |
+| `EMAIL_FROM` | `hitendra2309@gmail.com` | Displayed sender address on outgoing emails |
 | `PORT` | `8000` | Port the server listens on |
 
 ## Deploying the admin server (one-time setup)

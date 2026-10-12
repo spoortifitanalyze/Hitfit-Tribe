@@ -11,11 +11,18 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 
 const PORT = Number(process.env.PORT) || 8000;
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN || '';
 const GITHUB_REPO = process.env.GITHUB_REPO || 'spoortifitanalyze/Hitfit-Tribe';
 const GITHUB_BRANCH = process.env.GITHUB_BRANCH || 'main';
+const CONTACT_TO_EMAIL = process.env.CONTACT_TO_EMAIL || 'hitendra2309@gmail.com';
+const SMTP_HOST = process.env.SMTP_HOST || 'smtp.gmail.com';
+const SMTP_PORT = Number(process.env.SMTP_PORT || 587);
+const SMTP_USER = process.env.SMTP_USER || 'hitendra2309@gmail.com';
+const SMTP_PASS = process.env.SMTP_PASS || '';
+const EMAIL_FROM = process.env.EMAIL_FROM || SMTP_USER;
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'https://spoortifitanalyze.github.io')
   .split(',')
   .map((origin) => origin.trim())
@@ -334,7 +341,72 @@ const serveStatic = async (res, pathname) => {
 
 // ---------- API routes ----------
 
+const sendContactEmail = async (payload) => {
+  if (!SMTP_PASS || !SMTP_USER) {
+    throw badRequest(
+      'Email delivery is not configured yet. Set SMTP_USER and SMTP_PASS in the hosting environment before deploying.'
+    );
+  }
+
+  const transporter = nodemailer.createTransport({
+    host: SMTP_HOST,
+    port: SMTP_PORT,
+    secure: SMTP_PORT === 465,
+    auth: {
+      user: SMTP_USER,
+      pass: SMTP_PASS
+    }
+  });
+
+  const { name, email, goal, message } = payload;
+  const text = [
+    'New coaching enquiry from Hitfit Tribe website',
+    '',
+    `Name: ${name}`,
+    `Email: ${email}`,
+    `Program: ${goal}`,
+    '',
+    'Message:',
+    message
+  ].join('\n');
+
+  await transporter.sendMail({
+    from: EMAIL_FROM,
+    to: CONTACT_TO_EMAIL,
+    replyTo: email,
+    subject: `New coaching enquiry: ${name}`,
+    text,
+    html: `
+      <h2>New coaching enquiry</h2>
+      <p><strong>Name:</strong> ${String(name).replace(/[<>]/g, '')}</p>
+      <p><strong>Email:</strong> ${String(email).replace(/[<>]/g, '')}</p>
+      <p><strong>Program:</strong> ${String(goal).replace(/[<>]/g, '')}</p>
+      <p><strong>Message:</strong></p>
+      <p>${String(message).replace(/\n/g, '<br>')}</p>
+    `
+  });
+};
+
 const handleApi = async (req, res, pathname) => {
+  if (pathname === '/api/contact' && req.method === 'POST') {
+    const payload = await readJsonBody(req);
+    const name = String(payload.name || '').trim();
+    const email = normalizeEmail(payload.email || '');
+    const goal = String(payload.goal || '').trim();
+    const message = String(payload.message || '').trim();
+
+    if (!name || !email || !goal || !message) {
+      throw badRequest('Please complete all form fields before submitting.');
+    }
+    if (!isValidEmail(email)) {
+      throw badRequest('Please enter a valid email address.');
+    }
+
+    await sendContactEmail({ name, email, goal, message });
+    sendJson(res, 200, { ok: true, message: 'Thanks! Your message has been sent.' });
+    return;
+  }
+
   if (pathname === '/api/content' && req.method === 'GET') {
     sendJson(res, 200, await readContent());
     return;

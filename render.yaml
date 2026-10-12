@@ -13,4 +13,16 @@ services:
       - key: GITHUB_BRANCH
         value: main
       - key: ALLOWED_ORIGINS
-        value: https://spoortifitanalyze.github.io
+        value: https://spoortifitanalyze.github.io,https://hitfit.in,https://www.hitfit.in
+      - key: CONTACT_TO_EMAIL
+        value: hitendra2309@gmail.com
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USER
+        value: hitendra2309@gmail.com
+      - key: SMTP_PASS
+        sync: false
+      - key: EMAIL_FROM
+        value: hitendra2309@gmail.com

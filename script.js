@@ -187,32 +187,7 @@ const renderHomepage = async () => {
   }
 };
 
-const saveContactFormResponse = async (payload) => {
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-  const fileName = `hitfit-tribe-response-${timestamp}.json`;
-
-  try {
-    if ('showDirectoryPicker' in window) {
-      const directoryHandle = await window.showDirectoryPicker();
-      const fileHandle = await directoryHandle.getFileHandle(fileName, { create: true });
-      const writable = await fileHandle.createWritable();
-      await writable.write(JSON.stringify(payload, null, 2));
-      await writable.close();
-      return 'saved';
-    }
-  } catch (error) {
-    console.warn('Folder picker was cancelled or unsupported:', error);
-  }
-
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const anchor = document.createElement('a');
-  anchor.href = url;
-  anchor.download = fileName;
-  anchor.click();
-  URL.revokeObjectURL(url);
-  return 'downloaded';
-};
+const contactApiUrl = (window.HITFIT_CONTACT_API_URL || '').replace(/\/$/, '');
 
 document.addEventListener('DOMContentLoaded', () => {
   initCarousel(document.querySelector('.testimonial-carousel'));
@@ -230,11 +205,28 @@ document.addEventListener('DOMContentLoaded', () => {
         ...formData
       };
 
-      const result = await saveContactFormResponse(payload);
-      formStatus.textContent = result === 'saved'
-        ? 'Response saved to the selected folder.'
-        : 'Response downloaded to your browser. You can save it into a Google Drive folder later.';
-      contactForm.reset();
+      formStatus.textContent = 'Sending your message...';
+      formStatus.classList.remove('error', 'success');
+
+      try {
+        const response = await fetch(`${contactApiUrl || ''}/api/contact`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(result.error || 'Message sending failed. Please try again.');
+        }
+
+        formStatus.textContent = result.message || 'Thanks! Your message has been sent.';
+        formStatus.classList.add('success');
+        contactForm.reset();
+      } catch (error) {
+        formStatus.textContent = error.message || 'Something went wrong. Please try again.';
+        formStatus.classList.add('error');
+      }
     });
   }
 });

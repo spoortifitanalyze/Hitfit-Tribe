@@ -645,6 +645,14 @@ p {
   font-weight: 600;
 }
 
+.form-status.success {
+  color: #1d8f5f;
+}
+
+.form-status.error {
+  color: #b42318;
+}
+
 .site-footer {
   border-top: 1px solid var(--hairline);
   padding: 28px 0 42px;
