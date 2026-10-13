@@ -23,7 +23,7 @@ const SMTP_PORT = Number(process.env.SMTP_PORT || 587);
 const SMTP_USER = process.env.SMTP_USER || 'hitendra2309@gmail.com';
 const SMTP_PASS = process.env.SMTP_PASS || '';
 const EMAIL_FROM = process.env.EMAIL_FROM || SMTP_USER;
-const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'https://spoortifitanalyze.github.io')
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'https://spoortifitanalyze.github.io,https://hitfit.in,https://www.hitfit.in')
   .split(',')
   .map((origin) => origin.trim())
   .filter(Boolean);
