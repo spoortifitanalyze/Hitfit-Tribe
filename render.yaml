@@ -3,7 +3,7 @@ services:
     name: hitfit-tribe-admin
     runtime: node
     plan: free
-    buildCommand: echo "No build step"
+    buildCommand: npm install
     startCommand: node server.js
     envVars:
       - key: GITHUB_TOKEN
@@ -16,10 +16,15 @@ services:
         value: https://spoortifitanalyze.github.io,https://hitfit.in,https://www.hitfit.in
       - key: CONTACT_TO_EMAIL
         value: hitendra2309@gmail.com
+      # Render's free plan blocks outbound SMTP, so mail goes through gmail-relay.gs over HTTPS.
+      - key: GMAIL_RELAY_URL
+        sync: false
+      - key: GMAIL_RELAY_SECRET
+        sync: false
       - key: SMTP_HOST
         value: smtp.gmail.com
       - key: SMTP_PORT
-        value: "587"
+        value: "465"
       - key: SMTP_USER
         value: hitendra2309@gmail.com
       - key: SMTP_PASS

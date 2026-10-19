@@ -19,10 +19,14 @@ const GITHUB_REPO = process.env.GITHUB_REPO || 'spoortifitanalyze/Hitfit-Tribe';
 const GITHUB_BRANCH = process.env.GITHUB_BRANCH || 'main';
 const CONTACT_TO_EMAIL = process.env.CONTACT_TO_EMAIL || 'hitendra2309@gmail.com';
 const SMTP_HOST = process.env.SMTP_HOST || 'smtp.gmail.com';
-const SMTP_PORT = Number(process.env.SMTP_PORT || 587);
+const SMTP_PORT = Number(process.env.SMTP_PORT || 465);
 const SMTP_USER = process.env.SMTP_USER || 'hitendra2309@gmail.com';
 const SMTP_PASS = process.env.SMTP_PASS || '';
 const EMAIL_FROM = process.env.EMAIL_FROM || SMTP_USER;
+// Google Apps Script relay (gmail-relay.gs). Used instead of SMTP when set, because Render's
+// free plan blocks outbound SMTP ports.
+const GMAIL_RELAY_URL = process.env.GMAIL_RELAY_URL || '';
+const GMAIL_RELAY_SECRET = process.env.GMAIL_RELAY_SECRET || '';
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'https://spoortifitanalyze.github.io,https://hitfit.in,https://www.hitfit.in')
   .split(',')
   .map((origin) => origin.trim())
@@ -341,10 +345,23 @@ const serveStatic = async (res, pathname) => {
 
 // ---------- API routes ----------
 
-const sendContactEmail = async (payload) => {
+const sendViaGmailRelay = async (mail) => {
+  const response = await fetch(GMAIL_RELAY_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ...mail, secret: GMAIL_RELAY_SECRET })
+  });
+  const result = await response.json().catch(() => null);
+  if (!response.ok || !result?.ok) {
+    console.error('Gmail relay failed:', response.status, result);
+    throw new Error('Could not send the email.');
+  }
+};
+
+const sendViaSmtp = async (mail) => {
   if (!SMTP_PASS || !SMTP_USER) {
     throw badRequest(
-      'Email delivery is not configured yet. Set SMTP_USER and SMTP_PASS in the hosting environment before deploying.'
+      'Email delivery is not configured yet. Set GMAIL_RELAY_URL (or SMTP_USER and SMTP_PASS) in the hosting environment.'
     );
   }
 
@@ -355,9 +372,17 @@ const sendContactEmail = async (payload) => {
     auth: {
       user: SMTP_USER,
       pass: SMTP_PASS
-    }
+    },
+    connectionTimeout: 15000
   });
 
+  await transporter.sendMail({ from: EMAIL_FROM, ...mail });
+};
+
+const escapeHtml = (value) =>
+  String(value).replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
+
+const sendContactEmail = async (payload) => {
   const { name, email, goal, message } = payload;
   const text = [
     'New coaching enquiry from Hitfit Tribe website',
@@ -370,21 +395,22 @@ const sendContactEmail = async (payload) => {
     message
   ].join('\n');
 
-  await transporter.sendMail({
-    from: EMAIL_FROM,
+  const mail = {
     to: CONTACT_TO_EMAIL,
     replyTo: email,
     subject: `New coaching enquiry: ${name}`,
     text,
     html: `
       <h2>New coaching enquiry</h2>
-      <p><strong>Name:</strong> ${String(name).replace(/[<>]/g, '')}</p>
-      <p><strong>Email:</strong> ${String(email).replace(/[<>]/g, '')}</p>
-      <p><strong>Program:</strong> ${String(goal).replace(/[<>]/g, '')}</p>
+      <p><strong>Name:</strong> ${escapeHtml(name)}</p>
+      <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+      <p><strong>Program:</strong> ${escapeHtml(goal)}</p>
       <p><strong>Message:</strong></p>
-      <p>${String(message).replace(/\n/g, '<br>')}</p>
+      <p>${escapeHtml(message).replace(/\n/g, '<br>')}</p>
     `
-  });
+  };
+
+  await (GMAIL_RELAY_URL ? sendViaGmailRelay(mail) : sendViaSmtp(mail));
 };
 
 const handleApi = async (req, res, pathname) => {

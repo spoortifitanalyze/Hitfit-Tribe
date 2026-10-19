@@ -1,53 +1,43 @@
-# Gmail App Password Setup for Hitfit Tribe
+# Gmail Setup for the Hitfit Tribe Contact Form
 
-Use this when the app says:
+## Why not plain Gmail SMTP?
 
-> Email delivery is not configured yet. Set SMTP_USER and SMTP_PASS in the hosting environment before deploying.
+Render's free plan blocks outbound SMTP ports (25, 465 and 587), so the server cannot reach
+`smtp.gmail.com`. Every enquiry fails with "Server error". Changing the port does not help.
 
-## What to use for SMTP_PASS
+Instead, the server sends each enquiry over HTTPS to a small Google Apps Script
+([gmail-relay.gs](gmail-relay.gs)), and that script sends the email from the Gmail account.
 
-Do not use your normal Gmail password.
+## One-time setup (about 5 minutes)
 
-Use a Gmail App Password instead.
+1. Sign in to Google as **hitendra2309@gmail.com** (enquiries are sent from this account).
+2. Open https://script.google.com and click **New project**.
+3. Delete the sample code, paste in the contents of `gmail-relay.gs`, and save.
+4. Choose a long random secret, for example a 32-character password from a password manager.
+5. Click **Project Settings** (gear icon) > **Script properties** > **Add script property**:
+   - Property: `RELAY_SECRET`
+   - Value: your secret
+6. Click **Deploy** > **New deployment** > the gear icon > **Web app**:
+   - Execute as: **Me**
+   - Who has access: **Anyone**
+7. Click **Deploy**, approve the Gmail permission prompt, and copy the **Web app URL**
+   (it ends in `/exec`).
+8. In Render, open the `hitfit-tribe-admin` service > **Environment** and set:
 
-## Steps
+   ```text
+   GMAIL_RELAY_URL=<the Web app URL>
+   GMAIL_RELAY_SECRET=<the same secret as step 5>
+   ```
 
-1. Open your Google Account security page:
-   https://myaccount.google.com/security
-2. Turn on 2-Step Verification if it is not already enabled.
-3. Go to:
-   https://myaccount.google.com/apppasswords
-4. Choose:
-   - App: Mail
-   - Device: Windows Computer
-5. Click Generate.
-6. Copy the 16-character password that Google shows.
-7. Paste that value into the Render environment variable named `SMTP_PASS`.
+9. Save. Render redeploys the service automatically.
 
-Example:
+After that, contact form enquiries arrive at `CONTACT_TO_EMAIL` (hitendra2309@gmail.com), and
+Reply goes straight to the person who filled in the form.
 
-```text
-SMTP_USER=hitendra2309@gmail.com
-SMTP_PASS=abcd efgh ijkl mnop
-```
+## Notes
 
-Note: the password may appear with spaces in the UI. Copy the exact generated code and paste it as-is, without changing the characters.
-
-## Render environment variables
-
-Set these values in the Render service for the admin backend:
-
-```text
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=hitendra2309@gmail.com
-SMTP_PASS=<your generated Gmail app password>
-EMAIL_FROM=hitendra2309@gmail.com
-CONTACT_TO_EMAIL=hitendra2309@gmail.com
-```
-
-## Important
-
-- This is not the same as your normal Gmail login password.
-- This is a Google-generated app password for the app to send mail.
-- The password is only used by the server to sign in to Gmail SMTP.
+- If you edit `gmail-relay.gs` later, use **Deploy** > **Manage deployments** > edit > **New version**.
+  That keeps the same URL.
+- A free Gmail account can send about 100 emails a day this way, which is plenty for a contact form.
+- If `GMAIL_RELAY_URL` is not set, the server falls back to SMTP (`SMTP_USER` / `SMTP_PASS` with a
+  Gmail App Password). That works locally or on a paid Render plan, but not on the free plan.
